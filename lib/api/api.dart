@@ -1,16 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:template_app_bloc/main.dart';
 import 'package:aad_oauth/aad_oauth.dart';
 import 'package:aad_oauth/model/config.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:template_app_bloc/main.dart';
 
 final Config config = Config(
     tenant: '9d26c674-3130-4fe6-a83c-be30f76f331f',
     clientId: 'a73d04b9-6a3e-4221-8017-48234748358b',
-    redirectUri: "http://localhost:1234",
     webUseRedirect: false,
     scope: "Mail.Send SMTP.Send User.Read offline_access",
     navigatorKey: navigatorKey);
@@ -174,7 +173,7 @@ User resolve_user(user) {
 
 Future<List<Measure>> fetchMeasures() async {
   final response =
-      await http.get(Uri.parse("http://localhost:8000/colorette/list"));
+      await http.get(Uri.parse("http://172.16.63.32:8000/colorette/list"));
 
   if (response.statusCode == 200) {
     var decoded = jsonDecode(response.body);
@@ -187,7 +186,7 @@ Future<List<Measure>> fetchMeasures() async {
 
 Future<User> fetchMe() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final response = await http.get(Uri.parse("http://localhost:8000/user/me"),
+  final response = await http.get(Uri.parse("http://172.16.63.32:8000/user/me"),
       headers: {
         "Authorization": "Bearer ${prefs.getString("access_token").toString()}"
       });
@@ -201,7 +200,7 @@ Future<User> fetchMe() async {
 
 Future<List<User>> fetchUsers() async {
   final response =
-      await http.get(Uri.parse("http://localhost:8000/user/users"));
+      await http.get(Uri.parse("http://172.16.63.32:8000/user/users"));
   if (response.statusCode == 200) {
     var decoded = jsonDecode(response.body);
     Iterable i = (decoded);
@@ -213,7 +212,7 @@ Future<List<User>> fetchUsers() async {
 
 Future<List<Task>> fetchTasks() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final response = await http.get(Uri.parse("http://localhost:8000/task/tasks"),
+  final response = await http.get(Uri.parse("http://172.16.63.32:8000/task/tasks"),
       headers: {
         "Authorization": "Bearer ${prefs.getString("access_token").toString()}"
       });
@@ -229,7 +228,7 @@ Future<List<Task>> fetchTasks() async {
 Future<String> createTask(CreateTaskDTO data) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final response =
-      await http.post(Uri.parse("http://localhost:8000/task/create"),
+      await http.post(Uri.parse("http://172.16.63.32:8000/task/create"),
           headers: {
             "Authorization":
                 "Bearer ${prefs.getString("access_token").toString()}",
@@ -252,7 +251,7 @@ Future<String> createTask(CreateTaskDTO data) async {
 Future<String> updateTask(CreateTaskDTO data, String slug) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final response =
-      await http.post(Uri.parse("http://localhost:8000/task/edit/${slug}"),
+      await http.post(Uri.parse("http://172.16.63.32:8000/task/edit/${slug}"),
           headers: {
             "Authorization":
                 "Bearer ${prefs.getString("access_token").toString()}",
@@ -273,7 +272,7 @@ Future<String> updateTask(CreateTaskDTO data, String slug) async {
 Future<String> updateTaskStatus(StatusDTO data, String slug) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final response =
-      await http.put(Uri.parse("http://localhost:8000/task/status/${slug}"),
+      await http.put(Uri.parse("http://172.16.63.32:8000/task/status/${slug}"),
           headers: {
             "Authorization":
                 "Bearer ${prefs.getString("access_token").toString()}",
@@ -294,7 +293,7 @@ Future<String> updateTaskStatus(StatusDTO data, String slug) async {
 Future<String> deleteTask(String slug) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final response = await http
-      .delete(Uri.parse("http://localhost:8000/task/delete/${slug}"), headers: {
+      .delete(Uri.parse("http://172.16.63.32:8000/task/delete/${slug}"), headers: {
     "Authorization": "Bearer ${prefs.getString("access_token").toString()}",
   });
   if (response.statusCode == 200) {
@@ -316,7 +315,7 @@ Future<String> deleteTask(String slug) async {
   authenticatior.authorize();
 }*/
 
-void login(BuildContext context) async {
+Future<int> login(BuildContext context) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final AadOAuth oAuth = AadOAuth(config);
   final result = await oAuth.login();
@@ -326,23 +325,26 @@ void login(BuildContext context) async {
   );
   final access_token = await oAuth.getAccessToken();
   var login = await auth(access_token, context);
-  if (login == 200) {
+  if (login['status_code'] == 200) {
     prefs.setBool("loggedIn", true);
+    prefs.setString("ROLE", login['role']);
+    prefs.setString('access_token', login['access_token']);
+    return 200;
     //navigateToHome(context);
+  } else{
+    return 500;
   }
 }
 
-Future<int> auth(String? token, BuildContext context) async {
+Future<Map> auth(String? token, BuildContext context) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final response =
-      await http.get(Uri.parse("http://localhost:8000/user/login/${token}"));
+      await http.get(Uri.parse("http://172.16.63.32:8000/user/login/${token}"));
   if (response.statusCode == 200) {
     var decoded = jsonDecode(response.body);
-    prefs.setString("ROLE", decoded['role']);
-    prefs.setString('access_token', decoded['access_token']);
-    return 200;
+    return {'status_code': 200, 'access_token': decoded['access_token'], 'role': decoded['role']};
   } else {
-    return 500;
+    return {'status_code':500};
   }
 }
 

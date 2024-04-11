@@ -1,9 +1,11 @@
 import 'package:dropdown_cupertino/dropdown_cupertino.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:template_app_bloc/api/api.dart';
 import 'package:template_app_bloc/helpers/ui_helper.dart';
+import 'package:template_app_bloc/views/profile/widgets/status_text_field.dart';
 
 class TaskDetail extends StatefulWidget {
   final Task task;
@@ -12,24 +14,24 @@ class TaskDetail extends StatefulWidget {
 
   @override
   State<TaskDetail> createState() => _TaskDetailState();
+  List<String> list = [
+    'DONE',
+    'NOT_DONE',
+    'NEEDS_REVIEW',
+    'IN_REVIEW',
+    'BLOCKED'
+  ];
 }
 
 class _TaskDetailState extends State<TaskDetail> {
   TextEditingController status_controller = TextEditingController();
-  List<String> list = [
-        'DONE',
-        'NOT_DONE',
-        'NEEDS_REVIEW',
-        'IN_REVIEW',
-        'BLOCKED'
-      ];
+  String? _selectedStatus;
+  String dateInput = '';
 
   @override
   Widget build(BuildContext context) {
-    if (widget.task.canEdit == true) {
-      list.add('FINISHED');
-    }
-    status_controller.text = widget.task.type;
+    dateInput = widget.task.due_time;
+    _selectedStatus = widget.task.type;
     final levelIndicator = Container(
       child: Container(
         child: LinearProgressIndicator(
@@ -39,18 +41,58 @@ class _TaskDetailState extends State<TaskDetail> {
       ),
     );
 
-    final coursePrice = Container(
-      width: UIHelper.deviceWidth,
-      padding: const EdgeInsets.all(7.0),
-      decoration: new BoxDecoration(
-          border: new Border.all(color: Colors.white),
-          borderRadius: BorderRadius.circular(5.0)),
-      child: new Text(
-        // "\$20",
-        widget.task.assigned_by.email.toString(),
-        style: TextStyle(color: Colors.white),
-      ),
-    );
+    void _showDatePicker(BuildContext context, String? due_time) async {
+      final DateTime? pickedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2010),
+        lastDate: DateTime(2025),
+        builder: (context, child) {
+          return Theme(
+            data: Theme.of(context).copyWith(
+              colorScheme: const ColorScheme.light(
+                primary: Color(0xfff9e3dd), // <-- SEE HERE
+                onPrimary: Color.fromARGB(255, 9, 107, 187), // <-- SEE HERE
+                onSurface: Colors.black, // <-- SEE HERE
+              ),
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.blue, // button text color
+                ),
+              ),
+            ),
+            child: child!,
+          );
+        },
+      );
+      if (pickedDate != null) {
+        showTimePicker(context: context, initialTime: TimeOfDay.now())
+            .then((selectedTime) {
+          if (selectedTime != null) {
+            DateTime selected = DateTime(pickedDate.year, pickedDate.month,
+                pickedDate.day, selectedTime.hour, selectedTime.minute);
+            String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+            dateInput = formattedDate;
+          }
+        });
+      }
+    }
+
+    final coursePrice = ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: 50),
+        child: Container(
+          padding: const EdgeInsets.only(bottom: 1.0),
+          decoration: new BoxDecoration(
+              border: new Border.all(color: Colors.white),
+              borderRadius: BorderRadius.circular(5.0)),
+          child: InkWell(
+              onTap: () => {_showDatePicker(context, widget.task.due_time)},
+              child: Text(
+                // "\$20",
+                'Due Time: ${dateInput}',
+                style: const TextStyle(color: Colors.white),
+              )),
+        ));
 
     final topContentText = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,6 +128,9 @@ class _TaskDetailState extends State<TaskDetail> {
     );
 
     void showSheet(List<String> status) {
+      if (widget.task.canEdit == true) {
+        status.add('FINISHED');
+      }
       showCupertinoModalPopup(
           context: context,
           builder: (BuildContext context) => CupertinoActionSheet(
@@ -95,7 +140,6 @@ class _TaskDetailState extends State<TaskDetail> {
                         onPressed: () {
                           setState(() {
                             status_controller.text = e;
-                            print(status_controller.text);
                             Navigator.pop(context);
                           });
                           ;
@@ -106,25 +150,25 @@ class _TaskDetailState extends State<TaskDetail> {
     }
 
     Widget buildForm() {
+      if (widget.task.canEdit == true) {
+        widget.list.add("FINISHED");
+      }
       return Column(
         children: [
           Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
-            shadowColor: Colors.black12,
+            shadowColor: Colors.transparent,
             child: Padding(
                 padding: const EdgeInsets.only(left: 16, right: 16),
                 child: SizedBox(
                   child: Center(
-                      child: CupertinoTextFormFieldRow(
-                    controller: status_controller,
-                    prefix: const Text(
-                      'Status:',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    style: TextStyle(color: Colors.black),
-                    onTap: () => {showSheet(list)},
+                      child: StatusTextFieldWidget(
+                    status: widget.list,
+                    initialStatus: _selectedStatus,
+                    textEditingController: status_controller,
+                    onStatusChanged: (status) => {_selectedStatus = status},
                   )),
                 )),
           ),
@@ -257,110 +301,117 @@ class _TaskDetailState extends State<TaskDetail> {
           },
           child: Text("Update", style: TextStyle(color: Colors.black)),
         ));
-    final bottomContent = Container(
-        // height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        // color: Theme.of(context).primaryColor,
-        padding: EdgeInsets.all(40.0),
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              Column(
-                children: [
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    shadowColor: Colors.black12,
-                    child: Padding(
-                        padding: const EdgeInsets.only(left: 16, right: 16),
-                        child: SizedBox(
-                          child: Center(
-                              child: CupertinoTextFormFieldRow(
-                            controller: status_controller,
-                            prefix: const Text(
-                              'Status:',
-                              style: TextStyle(color: Colors.black),
-                            ),
-                            style: TextStyle(color: Colors.black),
-                            onTap: () => {showSheet(list)},
-                          )),
+    Widget bottomContent() {
+      return Container(
+          // height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          // color: Theme.of(context).primaryColor,
+          padding: EdgeInsets.all(40.0),
+          child: Center(
+            child: Column(
+              children: <Widget>[
+                Column(
+                  children: [
+                    Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        shadowColor: Colors.transparent,
+                        color: Colors.transparent,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 16, right: 16),
+                          child: SizedBox(
+                              child: Center(
+                                  child: StatusTextFieldWidget(
+                            status: widget.list,
+                            initialStatus: 'Status: $_selectedStatus',
+                            textEditingController: status_controller,
+                            onStatusChanged: (status) {
+                              status_controller.text = status;
+                              setState(() {
+                                _selectedStatus = status;
+                              });
+                            },
+                          ))),
                         )),
-                  ),
-                  Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      shadowColor: Colors.black12,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 16, right: 16),
-                        child: SizedBox(
-                            height: 45,
-                            child: Center(
-                              child: CupertinoTextFormFieldRow(
-                                prefix: const Text(
-                                  'Name:',
+                    Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        shadowColor: Colors.black12,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 16, right: 16),
+                          child: SizedBox(
+                              height: 45,
+                              child: Center(
+                                child: CupertinoTextFormFieldRow(
+                                  prefix: const Text(
+                                    'Name:',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
                                   style: TextStyle(color: Colors.black),
+                                  initialValue: widget.task.name,
+                                  readOnly: widget.task.canEdit ? false : true,
                                 ),
-                                style: TextStyle(color: Colors.black),
-                                initialValue: widget.task.name,
-                                readOnly: widget.task.canEdit ? false : true,
-                              ),
-                            )),
-                      )),
-                  Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      shadowColor: Colors.black12,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 16, right: 16),
-                        child: SizedBox(
-                            height: 45,
-                            child: Center(
-                              child: CupertinoTextFormFieldRow(
-                                prefix: const Text(
-                                  'Description:',
-                                  style: TextStyle(color: Colors.black),
+                              )),
+                        )),
+                    Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        shadowColor: Colors.black12,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 16, right: 16),
+                          child: SizedBox(
+                              height: 45,
+                              child: Center(
+                                child: CupertinoTextFormFieldRow(
+                                  prefix: const Text(
+                                    'Description:',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                  style: const TextStyle(color: Colors.black),
+                                  initialValue: widget.task.description,
+                                  readOnly: widget.task.canEdit ? false : true,
                                 ),
-                                style: const TextStyle(color: Colors.black),
-                                initialValue: widget.task.description,
-                                readOnly: widget.task.canEdit ? false : true,
-                              ),
-                            )),
-                      )),
-                  Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      shadowColor: Colors.black12,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 16, right: 16),
-                        child: SizedBox(
-                            height: 45,
-                            child: Center(
-                              child: MultiSelectDropDown<String>(
-                                onOptionSelected:
-                                    (List<ValueItem> selectedOptions) {},
-                                options: [
-                                  ValueItem(
-                                      label: 'damjan.okilj@studen-global.com',
-                                      value: 'damjan.okilj@studen-global.com')
-                                ],
-                                fieldBackgroundColor: Colors.white,
-                                selectionType: SelectionType.multi,
-                              ),
-                            )),
-                      )),
-                ],
-              ),
-              readButton
-            ],
-          ),
-        ));
+                              )),
+                        )),
+                    Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        shadowColor: Colors.black12,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 16, right: 16),
+                          child: SizedBox(
+                              height: 45,
+                              child: Center(
+                                child: MultiSelectDropDown<String>(
+                                  onOptionSelected:
+                                      (List<ValueItem> selectedOptions) {},
+                                  options: [
+                                    ValueItem(
+                                        label: 'damjan.okilj@studen-global.com',
+                                        value: 'damjan.okilj@studen-global.com')
+                                  ],
+                                  fieldBackgroundColor: Colors.white,
+                                  selectionType: SelectionType.multi,
+                                ),
+                              )),
+                        )),
+                  ],
+                ),
+                readButton
+              ],
+            ),
+          ));
+    }
+
+    ;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Column(
-        children: [topContent, bottomContent],
+        children: [topContent, bottomContent()],
       ),
     );
   }

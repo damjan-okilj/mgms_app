@@ -29,13 +29,12 @@ class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
 
   final bool loggedIn = true;
-
-
   @override
   State<SettingsView> createState() => _SettingsViewState();
 }
 
 class _SettingsViewState extends State<SettingsView> with SettingsViewMixin {
+
   @override
   Widget build(BuildContext context) {
     final LoginBloc loginBloc = BlocProvider.of<LoginBloc>(context);

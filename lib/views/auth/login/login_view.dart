@@ -64,13 +64,14 @@ class _LoginViewState extends State<LoginView> with LoginViewMixin {
                                 const SizedBox(height: 10),
                                 LoginButton(
                                   isLoading: state.isLoading,
-                                  onPressed: () {
-                                    login(context);
-                                    Navigator.pushAndRemoveUntil(context, 
-                                    CupertinoPageRoute(builder: (context) => const NavigationView(),
-                                    ), 
-                                    (route) => false,
-                                    );
+                                  onPressed: () async {
+                                    int result = await login(context);
+                                    if (result == 200){
+                                      Navigator.push(context, 
+                                      CupertinoPageRoute(builder: (context) => const NavigationView(),
+                                      ), 
+                                      );
+                                    }
                                   },
                                 ),
                                 const SizedBox(height: 10),

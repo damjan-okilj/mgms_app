@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:template_app_bloc/api/api.dart';
 import 'package:template_app_bloc/blocs/auth/login/login_bloc.dart';
 import 'package:template_app_bloc/blocs/auth/login/login_state.dart';
 import 'package:template_app_bloc/blocs/profile/profile_bloc.dart';
@@ -33,6 +34,17 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> with ProfileViewMixin {
+  User? me;
+  @override
+  void initState() {
+    // TODO: implement initState
+    fetchMe().then((value) => 
+    setState(() {
+      me=value;
+    }));
+    print(me?.email);
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     final ProfileBloc profileBloc = BlocProvider.of<ProfileBloc>(context);
@@ -51,9 +63,9 @@ class _ProfileViewState extends State<ProfileView> with ProfileViewMixin {
                   trailing: CustomTrailing(
                     showLoadingIndicator: true,
                     text: LocaleKeys.done,
-                    isLoading: profileState.user == null ? true : profileState.isLoading,
+                    isLoading: me == null ? true : profileState.isLoading,
                     onPressed: () {
-                      if (_checkValues() && profileState.user != null) {
+                      if (_checkValues() && me != null) {
                         profileState.user!.firstName = firstNameTextEditingController.text.trim();
                         profileState.user!.lastName = lastNameTextEditingController.text.trim();
                         profileState.user!.dateOfBirth = _selectedDate!;
@@ -66,7 +78,7 @@ class _ProfileViewState extends State<ProfileView> with ProfileViewMixin {
                     },
                   ),
                   children: [
-                    profileState.user != null
+                    me != null
                         ? Column(
                             children: [
                               Container(
@@ -89,11 +101,11 @@ class _ProfileViewState extends State<ProfileView> with ProfileViewMixin {
                                                   barrierDismissible: true,
                                                   context: context,
                                                   builder: (context) {
-                                                    return ImageDialog(imageUrl: profileState.user!.profilePhoto);
+                                                    return ImageDialog(imageUrl: 'https://media.istockphoto.com/id/1298261537/vector/blank-man-profile-head-icon-placeholder.jpg?s=2048x2048&w=is&k=20&c=arvyysiz2VuiQBB2DRZY0eXRu3169OlNJiSlqhupWF0=');
                                                   },
                                                 );
                                               },
-                                              child: ProfilePhotoWidget(imageUrl: profileState.user!.profilePhoto),
+                                              child: ProfilePhotoWidget(imageUrl: 'https://media.istockphoto.com/id/1298261537/vector/blank-man-profile-head-icon-placeholder.jpg?s=2048x2048&w=is&k=20&c=arvyysiz2VuiQBB2DRZY0eXRu3169OlNJiSlqhupWF0='),
                                             ),
                                             Expanded(
                                               child: Padding(
@@ -109,7 +121,7 @@ class _ProfileViewState extends State<ProfileView> with ProfileViewMixin {
                                               barrierDismissible: true,
                                               context: context,
                                               builder: (context) {
-                                                return ImageDialog(imageUrl: profileState.user!.profilePhoto);
+                                                return ImageDialog(imageUrl: 'https://media.istockphoto.com/id/1298261537/vector/blank-man-profile-head-icon-placeholder.jpg?s=2048x2048&w=is&k=20&c=arvyysiz2VuiQBB2DRZY0eXRu3169OlNJiSlqhupWF0=');
                                               },
                                             );
                                           },
