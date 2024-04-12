@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:template_app_bloc/blocs/theme/theme_bloc.dart';
-import 'package:template_app_bloc/blocs/theme/theme_state.dart';
-import 'package:template_app_bloc/constants/color_constants.dart';
+import 'package:MGMS/blocs/theme/theme_bloc.dart';
+import 'package:MGMS/blocs/theme/theme_state.dart';
+import 'package:MGMS/constants/color_constants.dart';
 
 class CustomTextField extends StatefulWidget {
   final TextEditingController textEditingController;
@@ -67,7 +67,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   onPressed: null,
                   child: Icon(
                     widget.prefixIcon,
-                    color: themeState.isDark ? ColorConstants.darkPrimaryIcon : ColorConstants.lightPrimaryIcon,
+                    color: themeState.isDark
+                        ? ColorConstants.darkPrimaryIcon
+                        : ColorConstants.lightPrimaryIcon,
                   ),
                 )
               : null,
@@ -85,7 +87,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
             ),
             borderRadius: const BorderRadius.all(Radius.circular(10)),
           ),
-          cursorColor: themeState.isDark ? ColorConstants.darkPrimaryIcon : ColorConstants.lightPrimaryIcon,
+          cursorColor: themeState.isDark
+              ? ColorConstants.darkPrimaryIcon
+              : ColorConstants.lightPrimaryIcon,
         );
       },
     );
@@ -102,8 +106,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 ? CupertinoButton(
                     padding: EdgeInsets.zero,
                     child: Icon(
-                      isObscureText ? CupertinoIcons.eye_solid : CupertinoIcons.eye_slash_fill,
-                      color: themeState.isDark ? ColorConstants.darkSecondaryIcon : ColorConstants.lightSecondaryIcon,
+                      isObscureText
+                          ? CupertinoIcons.eye_solid
+                          : CupertinoIcons.eye_slash_fill,
+                      color: themeState.isDark
+                          ? ColorConstants.darkSecondaryIcon
+                          : ColorConstants.lightSecondaryIcon,
                     ),
                     onPressed: () {
                       setState(() {

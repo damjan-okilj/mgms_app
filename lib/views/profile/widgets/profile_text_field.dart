@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:template_app_bloc/blocs/theme/theme_bloc.dart';
-import 'package:template_app_bloc/blocs/theme/theme_state.dart';
-import 'package:template_app_bloc/constants/color_constants.dart';
+import 'package:MGMS/blocs/theme/theme_bloc.dart';
+import 'package:MGMS/blocs/theme/theme_state.dart';
+import 'package:MGMS/constants/color_constants.dart';
 
 class ProfileTextField extends StatefulWidget {
   final TextEditingController textEditingController;
@@ -34,7 +34,9 @@ class _ProfileTextFieldState extends State<ProfileTextField> {
     focusNode.addListener(() {
       if (focusNode.hasFocus && widget.maxLength != null) {
         setState(() {
-          suffixText = (widget.maxLength! - widget.textEditingController.text.length).toString();
+          suffixText =
+              (widget.maxLength! - widget.textEditingController.text.length)
+                  .toString();
         });
       } else {
         setState(() {
@@ -66,7 +68,8 @@ class _ProfileTextFieldState extends State<ProfileTextField> {
                   ? Text(
                       suffixText!,
                       style: TextStyle(
-                        color: widget.textEditingController.text.length == widget.maxLength
+                        color: widget.textEditingController.text.length ==
+                                widget.maxLength
                             ? CupertinoColors.destructiveRed
                             : CupertinoColors.inactiveGray,
                       ),
@@ -76,7 +79,9 @@ class _ProfileTextFieldState extends State<ProfileTextField> {
           onChanged: (value) {
             if (widget.maxLength != null) {
               setState(() {
-                suffixText = (widget.maxLength! - widget.textEditingController.text.length).toString();
+                suffixText = (widget.maxLength! -
+                        widget.textEditingController.text.length)
+                    .toString();
               });
             }
           },

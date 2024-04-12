@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:template_app_bloc/models/user_model.dart';
+import 'package:MGMS/models/user_model.dart';
 
 class LoginState extends Equatable {
   final String? message;
@@ -13,7 +13,8 @@ class LoginState extends Equatable {
 
 class LoginSuccess extends LoginState {
   final UserModel user;
-  const LoginSuccess({required this.user, super.message, super.isLoading, super.statusCode});
+  const LoginSuccess(
+      {required this.user, super.message, super.isLoading, super.statusCode});
 
   @override
   List<Object?> get props => [user, message, isLoading, statusCode];
@@ -27,14 +28,16 @@ class LoginFailed extends LoginState {
 }
 
 class UpdatePasswordSuccess extends LoginState {
-  const UpdatePasswordSuccess({super.message, super.isLoading, super.statusCode});
+  const UpdatePasswordSuccess(
+      {super.message, super.isLoading, super.statusCode});
 
   @override
   List<Object?> get props => [message, isLoading, statusCode];
 }
 
 class UpdatePasswordFailed extends LoginState {
-  const UpdatePasswordFailed({super.message, super.isLoading, super.statusCode});
+  const UpdatePasswordFailed(
+      {super.message, super.isLoading, super.statusCode});
 
   @override
   List<Object?> get props => [message, isLoading, statusCode];
@@ -42,7 +45,8 @@ class UpdatePasswordFailed extends LoginState {
 
 class ValidateSuccess extends LoginState {
   final UserModel user;
-  const ValidateSuccess({required this.user, super.message, super.isLoading, super.statusCode});
+  const ValidateSuccess(
+      {required this.user, super.message, super.isLoading, super.statusCode});
 
   @override
   List<Object?> get props => [user, message, isLoading, statusCode];

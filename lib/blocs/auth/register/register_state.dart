@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:template_app_bloc/models/user_model.dart';
+import 'package:MGMS/models/user_model.dart';
 
 class RegisterState extends Equatable {
   final String? message;

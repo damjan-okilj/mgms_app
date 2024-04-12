@@ -2,9 +2,9 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:template_app_bloc/blocs/theme/theme_bloc.dart';
-import 'package:template_app_bloc/blocs/theme/theme_state.dart';
-import 'package:template_app_bloc/constants/color_constants.dart';
+import 'package:MGMS/blocs/theme/theme_bloc.dart';
+import 'package:MGMS/blocs/theme/theme_state.dart';
+import 'package:MGMS/constants/color_constants.dart';
 
 class ListTileWidget extends StatelessWidget {
   final String title;
@@ -31,8 +31,9 @@ class ListTileWidget extends StatelessWidget {
           //   darkColor: ColorConstants.darkItem,
           // ),
           backgroundColor: Colors.transparent,
-          backgroundColorActivated:
-              state.isDark ? ColorConstants.darkBackgroundColorActivated : ColorConstants.lightBackgroundColorActivated,
+          backgroundColorActivated: state.isDark
+              ? ColorConstants.darkBackgroundColorActivated
+              : ColorConstants.lightBackgroundColorActivated,
           onTap: onTap,
           title: Text(
             title,
@@ -62,7 +63,9 @@ class ListTileWidget extends StatelessWidget {
                   builder: (context, state) {
                     return Icon(
                       CupertinoIcons.forward,
-                      color: state.isDark ? ColorConstants.darkSecondaryIcon : ColorConstants.lightSecondaryIcon,
+                      color: state.isDark
+                          ? ColorConstants.darkSecondaryIcon
+                          : ColorConstants.lightSecondaryIcon,
                     );
                   },
                 ),

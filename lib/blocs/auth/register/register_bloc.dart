@@ -1,12 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:template_app_bloc/blocs/auth/register/register_event.dart';
-import 'package:template_app_bloc/blocs/auth/register/register_state.dart';
-import 'package:template_app_bloc/generated/locale_keys.g.dart';
-import 'package:template_app_bloc/models/http_response_model.dart';
-import 'package:template_app_bloc/models/user_model.dart';
-import 'package:template_app_bloc/services/firebase_service.dart';
-import 'package:template_app_bloc/services/user_service.dart';
+import 'package:MGMS/blocs/auth/register/register_event.dart';
+import 'package:MGMS/blocs/auth/register/register_state.dart';
+import 'package:MGMS/generated/locale_keys.g.dart';
+import 'package:MGMS/models/http_response_model.dart';
+import 'package:MGMS/models/user_model.dart';
+import 'package:MGMS/services/firebase_service.dart';
+import 'package:MGMS/services/user_service.dart';
 
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   final UserService userService;
@@ -15,23 +15,31 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     on<RegisterButtonPressed>((event, emit) async {
       emit(const RegisterState(isLoading: true));
       try {
-        HttpResponseModel<dynamic> registerResponse =
-            await userService.create(email: event.email, password: event.password);
+        HttpResponseModel<dynamic> registerResponse = await userService.create(
+            email: event.email, password: event.password);
         if (registerResponse.data != null) {
-          HttpResponseModel<dynamic> loginResponse =
-              await userService.login(email: event.email, password: event.password);
+          HttpResponseModel<dynamic> loginResponse = await userService.login(
+              email: event.email, password: event.password);
           if (loginResponse.data != null) {
             await FirebaseService.sendMail(
-                toMail: event.email, subject: LocaleKeys.welcome_subject.tr(), text: LocaleKeys.welcome_text.tr());
-            HttpResponseModel<dynamic> validateResponse = await userService.validate(token: loginResponse.data);
+                toMail: event.email,
+                subject: LocaleKeys.welcome_subject.tr(),
+                text: LocaleKeys.welcome_text.tr());
+            HttpResponseModel<dynamic> validateResponse =
+                await userService.validate(token: loginResponse.data);
             await userService.saveAuthTokenToSP(loginResponse.data);
             final user = UserModel.fromMap(validateResponse.data);
-            emit(RegisterSuccess(user: user, message: validateResponse.message, isLoading: false));
+            emit(RegisterSuccess(
+                user: user,
+                message: validateResponse.message,
+                isLoading: false));
           } else {
-            emit(RegisterState(isLoading: false, message: loginResponse.message));
+            emit(RegisterState(
+                isLoading: false, message: loginResponse.message));
           }
         } else {
-          emit(RegisterState(isLoading: false, message: registerResponse.message));
+          emit(RegisterState(
+              isLoading: false, message: registerResponse.message));
         }
       } catch (error) {
         emit(RegisterFailed(message: error.toString(), isLoading: false));
@@ -41,10 +49,12 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     on<CheckButtonPressed>((event, emit) async {
       emit(const RegisterState(isLoading: true));
       try {
-        HttpResponseModel<dynamic> checkResponse = await userService.check(email: event.email);
+        HttpResponseModel<dynamic> checkResponse =
+            await userService.check(email: event.email);
         if (checkResponse.data != null) {
           if (!checkResponse.data) {
-            int? verificationCode = await FirebaseService.sendVerificationCode(toMail: event.email);
+            int? verificationCode =
+                await FirebaseService.sendVerificationCode(toMail: event.email);
             emit(
               CheckSuccess(
                 email: event.email,
@@ -68,17 +78,20 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
           }
         }
       } catch (error) {
-        emit(CheckFailed(message: error.toString(), isLoading: false, data: null));
+        emit(CheckFailed(
+            message: error.toString(), isLoading: false, data: null));
       }
     });
 
     on<ForgotPasswordButtonPressed>((event, emit) async {
       emit(const RegisterState(isLoading: true));
       try {
-        HttpResponseModel<dynamic> checkResponse = await userService.check(email: event.email);
+        HttpResponseModel<dynamic> checkResponse =
+            await userService.check(email: event.email);
         if (checkResponse.data != null) {
           if (checkResponse.data) {
-            int? verificationCode = await FirebaseService.sendVerificationCode(toMail: event.email);
+            int? verificationCode =
+                await FirebaseService.sendVerificationCode(toMail: event.email);
             emit(
               ForgotPasswordCheckSuccess(
                 email: event.email,
@@ -99,7 +112,8 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
           }
         }
       } catch (error) {
-        emit(ForgotPasswordCheckFailed(message: error.toString(), isLoading: false, data: null));
+        emit(ForgotPasswordCheckFailed(
+            message: error.toString(), isLoading: false, data: null));
       }
     });
 

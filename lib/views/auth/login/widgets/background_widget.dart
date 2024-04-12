@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:template_app_bloc/helpers/ui_helper.dart';
+import 'package:MGMS/helpers/ui_helper.dart';
 
 class BackgroundWidget extends StatelessWidget {
   const BackgroundWidget({super.key});

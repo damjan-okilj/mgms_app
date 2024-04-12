@@ -2,11 +2,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:template_app_bloc/blocs/theme/theme_bloc.dart';
-import 'package:template_app_bloc/blocs/theme/theme_state.dart';
-import 'package:template_app_bloc/constants/color_constants.dart';
-import 'package:template_app_bloc/generated/locale_keys.g.dart';
-import 'package:template_app_bloc/helpers/ui_helper.dart';
+import 'package:MGMS/blocs/theme/theme_bloc.dart';
+import 'package:MGMS/blocs/theme/theme_state.dart';
+import 'package:MGMS/constants/color_constants.dart';
+import 'package:MGMS/generated/locale_keys.g.dart';
+import 'package:MGMS/helpers/ui_helper.dart';
 
 class BirthdayTextFieldWidget extends StatefulWidget {
   final DateTime? initialDateTime;
@@ -22,7 +22,8 @@ class BirthdayTextFieldWidget extends StatefulWidget {
   });
 
   @override
-  State<BirthdayTextFieldWidget> createState() => _BirthdayTextFieldWidgetState();
+  State<BirthdayTextFieldWidget> createState() =>
+      _BirthdayTextFieldWidgetState();
 }
 
 class _BirthdayTextFieldWidgetState extends State<BirthdayTextFieldWidget> {
@@ -63,7 +64,8 @@ class _BirthdayTextFieldWidgetState extends State<BirthdayTextFieldWidget> {
                       maximumYear: DateTime.now().year,
                       use24hFormat: true,
                       onDateTimeChanged: (DateTime newDateTime) {
-                        _selectedDateTime = DateTime.utc(newDateTime.year, newDateTime.month, newDateTime.day);
+                        _selectedDateTime = DateTime.utc(newDateTime.year,
+                            newDateTime.month, newDateTime.day);
                         widget.onDateTimeChanged(_selectedDateTime);
                       },
                     ),
@@ -90,7 +92,9 @@ class _BirthdayTextFieldWidgetState extends State<BirthdayTextFieldWidget> {
             padding: const EdgeInsets.only(right: 10),
             child: Icon(
               CupertinoIcons.forward,
-              color: themeState.isDark ? ColorConstants.darkSecondaryIcon : ColorConstants.lightSecondaryIcon,
+              color: themeState.isDark
+                  ? ColorConstants.darkSecondaryIcon
+                  : ColorConstants.lightSecondaryIcon,
             ),
           ),
           decoration: BoxDecoration(

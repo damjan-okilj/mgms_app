@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:template_app_bloc/constants/image_constants.dart';
-import 'package:template_app_bloc/helpers/ui_helper.dart';
+import 'package:MGMS/constants/image_constants.dart';
+import 'package:MGMS/helpers/ui_helper.dart';
 
 class ProfilePhotoWidget extends StatelessWidget {
   final String imageUrl;

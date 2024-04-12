@@ -5,25 +5,36 @@ import 'package:aad_oauth/model/config.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:template_app_bloc/main.dart';
+import 'package:MGMS/main.dart';
 
 final Config config = Config(
     tenant: '9d26c674-3130-4fe6-a83c-be30f76f331f',
     clientId: 'a73d04b9-6a3e-4221-8017-48234748358b',
     webUseRedirect: false,
+    isB2C: false,
     scope: "Mail.Send SMTP.Send User.Read offline_access",
     navigatorKey: navigatorKey);
 
-enum Status {DONE, NOT_DONE, NEEDS_REVIEW, IN_REVIEW, BLOCKED, FINISHED}
+enum Status { DONE, NOT_DONE, NEEDS_REVIEW, IN_REVIEW, BLOCKED, FINISHED }
 
 class User {
   final String email;
   final String type;
+  final String first_name;
+  final String last_name;
 
-  const User({required this.email, required this.type});
+  const User(
+      {required this.email,
+      required this.type,
+      required this.first_name,
+      required this.last_name});
 
   factory User.fromJson(Map<String, dynamic> json) {
-    return User(email: json['email'], type: json['type']);
+    return User(
+        email: json['email'],
+        type: json['type'],
+        first_name: json['first_name'],
+        last_name: json['last_name']);
   }
 }
 
@@ -173,7 +184,7 @@ User resolve_user(user) {
 
 Future<List<Measure>> fetchMeasures() async {
   final response =
-      await http.get(Uri.parse("http://172.16.63.32:8000/colorette/list"));
+      await http.get(Uri.parse("http://172.16.63.32:80/colorette/list"));
 
   if (response.statusCode == 200) {
     var decoded = jsonDecode(response.body);
@@ -186,7 +197,7 @@ Future<List<Measure>> fetchMeasures() async {
 
 Future<User> fetchMe() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final response = await http.get(Uri.parse("http://172.16.63.32:8000/user/me"),
+  final response = await http.get(Uri.parse("http://172.16.63.32:80/user/me"),
       headers: {
         "Authorization": "Bearer ${prefs.getString("access_token").toString()}"
       });
@@ -200,7 +211,7 @@ Future<User> fetchMe() async {
 
 Future<List<User>> fetchUsers() async {
   final response =
-      await http.get(Uri.parse("http://172.16.63.32:8000/user/users"));
+      await http.get(Uri.parse("http://172.16.63.32:80/user/users"));
   if (response.statusCode == 200) {
     var decoded = jsonDecode(response.body);
     Iterable i = (decoded);
@@ -212,10 +223,10 @@ Future<List<User>> fetchUsers() async {
 
 Future<List<Task>> fetchTasks() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final response = await http.get(Uri.parse("http://172.16.63.32:8000/task/tasks"),
-      headers: {
-        "Authorization": "Bearer ${prefs.getString("access_token").toString()}"
-      });
+  final response = await http
+      .get(Uri.parse("http://172.16.63.32:80/task/tasks"), headers: {
+    "Authorization": "Bearer ${prefs.getString("access_token").toString()}"
+  });
   if (response.statusCode == 200) {
     var decoded = jsonDecode(response.body);
     Iterable i = (decoded);
@@ -228,7 +239,7 @@ Future<List<Task>> fetchTasks() async {
 Future<String> createTask(CreateTaskDTO data) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final response =
-      await http.post(Uri.parse("http://172.16.63.32:8000/task/create"),
+      await http.post(Uri.parse("http://172.16.63.32:80/task/create"),
           headers: {
             "Authorization":
                 "Bearer ${prefs.getString("access_token").toString()}",
@@ -251,7 +262,7 @@ Future<String> createTask(CreateTaskDTO data) async {
 Future<String> updateTask(CreateTaskDTO data, String slug) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final response =
-      await http.post(Uri.parse("http://172.16.63.32:8000/task/edit/${slug}"),
+      await http.post(Uri.parse("http://172.16.63.32:80/task/edit/${slug}"),
           headers: {
             "Authorization":
                 "Bearer ${prefs.getString("access_token").toString()}",
@@ -272,7 +283,7 @@ Future<String> updateTask(CreateTaskDTO data, String slug) async {
 Future<String> updateTaskStatus(StatusDTO data, String slug) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final response =
-      await http.put(Uri.parse("http://172.16.63.32:8000/task/status/${slug}"),
+      await http.put(Uri.parse("http://172.16.63.32:80/task/status/${slug}"),
           headers: {
             "Authorization":
                 "Bearer ${prefs.getString("access_token").toString()}",
@@ -292,10 +303,11 @@ Future<String> updateTaskStatus(StatusDTO data, String slug) async {
 
 Future<String> deleteTask(String slug) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final response = await http
-      .delete(Uri.parse("http://172.16.63.32:8000/task/delete/${slug}"), headers: {
-    "Authorization": "Bearer ${prefs.getString("access_token").toString()}",
-  });
+  final response = await http.delete(
+      Uri.parse("http://172.16.63.32:80/task/delete/${slug}"),
+      headers: {
+        "Authorization": "Bearer ${prefs.getString("access_token").toString()}",
+      });
   if (response.statusCode == 200) {
     return "Task Deleted";
   } else if (response.statusCode == 401) {
@@ -324,14 +336,16 @@ Future<int> login(BuildContext context) async {
     (r) => print('Logged in successfully, your access token: $r'),
   );
   final access_token = await oAuth.getAccessToken();
+  print(access_token);
   var login = await auth(access_token, context);
   if (login['status_code'] == 200) {
     prefs.setBool("loggedIn", true);
     prefs.setString("ROLE", login['role']);
     prefs.setString('access_token', login['access_token']);
+    prefs.setString('email', login['email']);
     return 200;
     //navigateToHome(context);
-  } else{
+  } else {
     return 500;
   }
 }
@@ -339,12 +353,19 @@ Future<int> login(BuildContext context) async {
 Future<Map> auth(String? token, BuildContext context) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final response =
-      await http.get(Uri.parse("http://172.16.63.32:8000/user/login/${token}"));
+      await http.get(Uri.parse("http://172.16.63.32:80/user/login/${token}"));
   if (response.statusCode == 200) {
     var decoded = jsonDecode(response.body);
-    return {'status_code': 200, 'access_token': decoded['access_token'], 'role': decoded['role']};
+    print(decoded);
+    return {
+      'status_code': 200,
+      'access_token': decoded['access_token'],
+      'role': decoded['role'],
+      'email': decoded['email']
+    };
   } else {
-    return {'status_code':500};
+    print(jsonDecode(response.body));
+    return {'status_code': 500};
   }
 }
 

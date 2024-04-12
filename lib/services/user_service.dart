@@ -1,17 +1,18 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:template_app_bloc/interfaces/user_interface.dart';
-import 'package:template_app_bloc/models/http_response_model.dart';
+import 'package:MGMS/interfaces/user_interface.dart';
+import 'package:MGMS/models/http_response_model.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:template_app_bloc/models/user_model.dart';
+import 'package:MGMS/models/user_model.dart';
 
 class UserService extends UserInterface {
   final String _baseUrl = dotenv.env['BASE_URL'] ?? "";
   final String _authTokenKey = dotenv.env['AUTH_TOKEN_KEY'] ?? "";
 
   @override
-  Future<HttpResponseModel> login({required String email, required String password}) async {
+  Future<HttpResponseModel> login(
+      {required String email, required String password}) async {
     try {
       var url = Uri.parse('$_baseUrl/login');
       var response = await http.post(
@@ -35,7 +36,8 @@ class UserService extends UserInterface {
   }
 
   @override
-  Future<HttpResponseModel> create({required String email, required String password}) async {
+  Future<HttpResponseModel> create(
+      {required String email, required String password}) async {
     try {
       var url = Uri.parse('$_baseUrl/users');
       var response = await http.post(
@@ -194,7 +196,8 @@ class UserService extends UserInterface {
   }
 
   @override
-  Future<HttpResponseModel> updatePassword({required String userId, required String password}) async {
+  Future<HttpResponseModel> updatePassword(
+      {required String userId, required String password}) async {
     try {
       var url = Uri.parse('$_baseUrl/users/$userId');
       var response = await http.put(

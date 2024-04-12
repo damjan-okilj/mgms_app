@@ -1,15 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:template_app_bloc/blocs/theme/theme_bloc.dart';
-import 'package:template_app_bloc/blocs/theme/theme_state.dart';
-import 'package:template_app_bloc/constants/color_constants.dart';
+import 'package:MGMS/blocs/theme/theme_bloc.dart';
+import 'package:MGMS/blocs/theme/theme_state.dart';
+import 'package:MGMS/constants/color_constants.dart';
 
 class VerificationCodeTextField extends StatelessWidget {
   final TextEditingController textEditingController;
   final bool enabled;
   final void Function()? onPressed;
   const VerificationCodeTextField(
-      {super.key, required this.textEditingController, required this.onPressed, this.enabled = true});
+      {super.key,
+      required this.textEditingController,
+      required this.onPressed,
+      this.enabled = true});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +21,9 @@ class VerificationCodeTextField extends StatelessWidget {
         return CupertinoTextField(
           suffix: CupertinoButton(
             onPressed: onPressed,
-            child: enabled ? const Icon(CupertinoIcons.arrow_right_circle) : const CupertinoActivityIndicator(),
+            child: enabled
+                ? const Icon(CupertinoIcons.arrow_right_circle)
+                : const CupertinoActivityIndicator(),
           ),
           onSubmitted: (value) {
             if (onPressed != null) onPressed!();
@@ -42,7 +47,9 @@ class VerificationCodeTextField extends StatelessWidget {
             onPressed: null,
             child: Icon(
               CupertinoIcons.staroflife_fill,
-              color: themeState.isDark ? ColorConstants.darkPrimaryIcon : ColorConstants.lightPrimaryIcon,
+              color: themeState.isDark
+                  ? ColorConstants.darkPrimaryIcon
+                  : ColorConstants.lightPrimaryIcon,
             ),
           ),
           decoration: BoxDecoration(

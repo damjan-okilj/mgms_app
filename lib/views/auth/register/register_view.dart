@@ -2,20 +2,20 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:template_app_bloc/blocs/auth/register/register_bloc.dart';
-import 'package:template_app_bloc/blocs/auth/register/register_event.dart';
-import 'package:template_app_bloc/blocs/auth/register/register_state.dart';
-import 'package:template_app_bloc/blocs/theme/theme_bloc.dart';
-import 'package:template_app_bloc/blocs/theme/theme_state.dart';
-import 'package:template_app_bloc/components/custom_text_field.dart';
-import 'package:template_app_bloc/generated/locale_keys.g.dart';
-import 'package:template_app_bloc/helpers/app_helper.dart';
-import 'package:template_app_bloc/models/http_response_model.dart';
-import 'package:template_app_bloc/views/auth/register/widgets/background_widget.dart';
-import 'package:template_app_bloc/views/auth/register/widgets/push_to_login_button.dart';
-import 'package:template_app_bloc/views/auth/register/widgets/title_widget.dart';
-import 'package:template_app_bloc/views/auth/register/widgets/register_button.dart';
-import 'package:template_app_bloc/views/auth/verify/verify_view.dart';
+import 'package:MGMS/blocs/auth/register/register_bloc.dart';
+import 'package:MGMS/blocs/auth/register/register_event.dart';
+import 'package:MGMS/blocs/auth/register/register_state.dart';
+import 'package:MGMS/blocs/theme/theme_bloc.dart';
+import 'package:MGMS/blocs/theme/theme_state.dart';
+import 'package:MGMS/components/custom_text_field.dart';
+import 'package:MGMS/generated/locale_keys.g.dart';
+import 'package:MGMS/helpers/app_helper.dart';
+import 'package:MGMS/models/http_response_model.dart';
+import 'package:MGMS/views/auth/register/widgets/background_widget.dart';
+import 'package:MGMS/views/auth/register/widgets/push_to_login_button.dart';
+import 'package:MGMS/views/auth/register/widgets/title_widget.dart';
+import 'package:MGMS/views/auth/register/widgets/register_button.dart';
+import 'package:MGMS/views/auth/verify/verify_view.dart';
 part "register_view_mixin.dart";
 
 class RegisterView extends StatefulWidget {
@@ -54,7 +54,8 @@ class _RegisterViewState extends State<RegisterView> with RegisterViewMixin {
                                 const TitleWidget(),
                                 const SizedBox(height: 20),
                                 CustomTextField(
-                                  textEditingController: _emailTextEditingController,
+                                  textEditingController:
+                                      _emailTextEditingController,
                                   placeholder: LocaleKeys.email.tr(),
                                   prefixIcon: CupertinoIcons.mail,
                                   enabled: !state.isLoading,
@@ -62,7 +63,8 @@ class _RegisterViewState extends State<RegisterView> with RegisterViewMixin {
                                 ),
                                 const SizedBox(height: 10),
                                 CustomTextField(
-                                  textEditingController: _passwordTextEditingController,
+                                  textEditingController:
+                                      _passwordTextEditingController,
                                   placeholder: LocaleKeys.password.tr(),
                                   textInputAction: TextInputAction.done,
                                   enabled: !state.isLoading,

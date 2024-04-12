@@ -2,8 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:template_app_bloc/blocs/theme/theme_bloc.dart';
-import 'package:template_app_bloc/blocs/theme/theme_state.dart';
+import 'package:MGMS/blocs/theme/theme_bloc.dart';
+import 'package:MGMS/blocs/theme/theme_state.dart';
 
 class CustomScaffold extends StatelessWidget {
   final String title;
@@ -32,14 +32,16 @@ class CustomScaffold extends StatelessWidget {
         builder: (context, themeState) {
           return CupertinoPageScaffold(
             child: CustomScrollView(
-              physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+              physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics()),
               slivers: [
                 CupertinoSliverNavigationBar(
                   padding: navigationBarPadding,
                   backgroundColor: navigationBarBackgroundColor,
                   border: null,
                   largeTitle: Text(title).tr(),
-                  brightness: themeState.isDark ? Brightness.dark : Brightness.light,
+                  brightness:
+                      themeState.isDark ? Brightness.dark : Brightness.light,
                   trailing: trailing,
                   automaticallyImplyLeading: automaticallyImplyLeading,
                 ),

@@ -1,11 +1,11 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:template_app_bloc/blocs/theme/theme_bloc.dart';
-import 'package:template_app_bloc/blocs/theme/theme_state.dart';
-import 'package:template_app_bloc/constants/color_constants.dart';
-import 'package:template_app_bloc/generated/locale_keys.g.dart';
-import 'package:template_app_bloc/views/auth/register/register_view.dart';
+import 'package:MGMS/blocs/theme/theme_bloc.dart';
+import 'package:MGMS/blocs/theme/theme_state.dart';
+import 'package:MGMS/constants/color_constants.dart';
+import 'package:MGMS/generated/locale_keys.g.dart';
+import 'package:MGMS/views/auth/register/register_view.dart';
 
 class PushToRegisterButton extends StatelessWidget {
   const PushToRegisterButton({super.key});
@@ -28,7 +28,9 @@ class PushToRegisterButton extends StatelessWidget {
           child: Text(
             LocaleKeys.register,
             style: TextStyle(
-              color: themeState.isDark ? ColorConstants.darkPrimaryIcon : ColorConstants.lightPrimaryIcon,
+              color: themeState.isDark
+                  ? ColorConstants.darkPrimaryIcon
+                  : ColorConstants.lightPrimaryIcon,
             ),
           ).tr(),
         );

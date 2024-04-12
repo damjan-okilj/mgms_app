@@ -4,18 +4,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:MGMS/api/api.dart';
 import 'package:MGMS/helpers/ui_helper.dart';
 import 'package:MGMS/views/profile/widgets/status_text_field.dart';
 
-class TaskDetail extends StatefulWidget {
-  final Task task;
+class NewTask extends StatefulWidget {
+  NewTask({super.key, required this.users});
 
-  TaskDetail({super.key, required this.task, required this.users});
   List<User> users = [];
   @override
-  State<TaskDetail> createState() => _TaskDetailState();
-  List<String> list = [
+  State<NewTask> createState() => _NewTaskState();
+  final List<String> list = [
     'DONE',
     'NOT_DONE',
     'NEEDS_REVIEW',
@@ -24,23 +24,18 @@ class TaskDetail extends StatefulWidget {
   ];
 }
 
-class _TaskDetailState extends State<TaskDetail> {
+class _NewTaskState extends State<NewTask> {
+  final ScrollController _scrollController = ScrollController();
+  TextEditingController name_controller = TextEditingController();
+  TextEditingController description_controller = TextEditingController();
   TextEditingController status_controller = TextEditingController();
-  String? _selectedStatus;
+  TextEditingController date_controller = TextEditingController();
   String dateInput = '';
-  List<String> pickedUsers = [];
+  List<ValueItem> selected = [];
 
-  @override
-  void initState() {
-    status_controller.text = widget.task.type;
-    // TODO: implement initState
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
-    dateInput = widget.task.due_time;
-    _selectedStatus = widget.task.type;
     final levelIndicator = Container(
       child: Container(
         child: LinearProgressIndicator(
@@ -81,27 +76,12 @@ class _TaskDetailState extends State<TaskDetail> {
             DateTime selected = DateTime(pickedDate.year, pickedDate.month,
                 pickedDate.day, selectedTime.hour, selectedTime.minute);
             String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+            date_controller.text = formattedDate;
             dateInput = formattedDate;
           }
         });
       }
     }
-
-    final coursePrice = ConstrainedBox(
-        constraints: BoxConstraints(maxHeight: 50),
-        child: Container(
-          padding: const EdgeInsets.only(bottom: 1.0),
-          decoration: new BoxDecoration(
-              border: new Border.all(color: Colors.white),
-              borderRadius: BorderRadius.circular(5.0)),
-          child: InkWell(
-              onTap: () => {_showDatePicker(context, widget.task.due_time)},
-              child: Text(
-                // "\$20",
-                'Due Time: ${dateInput}',
-                style: const TextStyle(color: Colors.white),
-              )),
-        ));
 
     final topContentText = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,36 +94,18 @@ class _TaskDetailState extends State<TaskDetail> {
         ),
         SizedBox(height: 10.0),
         Text(
-          widget.task.name,
+          "Create Task",
           style: TextStyle(color: Colors.white, fontSize: 45.0),
         ),
         SizedBox(height: 30.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Expanded(flex: 1, child: levelIndicator),
-            Expanded(
-                flex: 6,
-                child: Padding(
-                    padding: EdgeInsets.only(left: 10.0),
-                    child: Text(
-                      widget.task.type,
-                      style: TextStyle(color: Colors.white),
-                    ))),
-          ],
+          children: <Widget>[],
         ),
-        const Spacer(),
-        SizedBox(
-          height: 19,
-          child: coursePrice,
-        )
       ],
     );
 
-    void showSheet(List<String> status) {
-      if (widget.task.canEdit == true) {
-        status.add('FINISHED');
-      }
+    void showSheet(List<String> status) async {
       showCupertinoModalPopup(
           context: context,
           builder: (BuildContext context) => CupertinoActionSheet(
@@ -160,108 +122,6 @@ class _TaskDetailState extends State<TaskDetail> {
                         child: Text(e)))
                     .toList(),
               ));
-    }
-
-    Widget buildForm() {
-      if (widget.task.canEdit == true) {
-        widget.list.add("FINISHED");
-      }
-      return Column(
-        children: [
-          Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            shadowColor: Colors.transparent,
-            child: Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16),
-                child: SizedBox(
-                  child: Center(
-                      child: StatusTextFieldWidget(
-                    status: widget.list,
-                    initialStatus: _selectedStatus,
-                    textEditingController: status_controller,
-                    onStatusChanged: (status) => {_selectedStatus = status},
-                  )),
-                )),
-          ),
-          Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              shadowColor: Colors.black12,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16),
-                child: SizedBox(
-                    height: 45,
-                    child: Center(
-                      child: CupertinoTextFormFieldRow(
-                        prefix: const Text(
-                          'Name:',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        style: TextStyle(color: Colors.black),
-                        initialValue: widget.task.name,
-                        readOnly: widget.task.canEdit ? false : true,
-                      ),
-                    )),
-              )),
-          Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              shadowColor: Colors.black12,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16),
-                child: SizedBox(
-                    height: 45,
-                    child: Center(
-                      child: CupertinoTextFormFieldRow(
-                        prefix: const Text(
-                          'Description:',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        style: const TextStyle(color: Colors.black),
-                        initialValue: widget.task.description,
-                        readOnly: widget.task.canEdit ? false : true,
-                      ),
-                    )),
-              )),
-          Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              shadowColor: Colors.black12,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16),
-                child: SizedBox(
-                    height: 45,
-                    child: Center(
-                      child: MultiSelectDropDown<String>(
-                        selectedOptions: widget.task.assigned_to
-                            .map((e) => ValueItem(
-                                label: '${e.first_name} ${e.last_name}',
-                                value: e.email))
-                            .toList(),
-                        onOptionSelected: (List<ValueItem> selectedOptions) {
-                          selectedOptions.map((e) => pickedUsers.add(e.value));
-                          print(pickedUsers);
-                        },
-                        onOptionRemoved: (index, ValueItem selectedOption) {
-                          pickedUsers.remove(selectedOption.value);
-                        },
-                        options: widget.users
-                            .map((e) => ValueItem(
-                                label: '${e.first_name} ${e.last_name}',
-                                value: e.email))
-                            .toList(),
-                        fieldBackgroundColor: Colors.white,
-                        selectionType: SelectionType.multi,
-                      ),
-                    )),
-              )),
-        ],
-      );
     }
 
     final topContent = Stack(
@@ -284,21 +144,11 @@ class _TaskDetailState extends State<TaskDetail> {
             child: topContentText,
           ),
         ),
-        Positioned(
-          left: 8.0,
-          top: 60.0,
-          child: InkWell(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Icon(Icons.arrow_back, color: Colors.white),
-          ),
-        )
       ],
     );
 
     final bottomContentText = Text(
-      widget.task.description,
+      "widget.task.description,",
       style: TextStyle(fontSize: 18.0),
     );
 
@@ -310,20 +160,36 @@ class _TaskDetailState extends State<TaskDetail> {
                 context: context,
                 builder: (context) {
                   return CupertinoAlertDialog(
-                    title: const Text("Update status"),
-                    content: const Text("Update status?"),
+                    title: const Text("Are you sure you want to create new task"),
                     actions: [
                       CupertinoDialogAction(
-                        child: const Text("Yes"),
-                        onPressed: () {
-                          updateTaskStatus(
-                              StatusDTO(type: status_controller.text),
-                              widget.task.slug);
+                        child: const Text("Create"),
+                        onPressed: () async {
+                          List<String> assignes = [];
+                          for(var data in selected){
+                            assignes.add(data.value);
+                          }
+                          CreateTaskDTO data = CreateTaskDTO(
+                            assigned_to: assignes,
+                            name: name_controller.text,
+                            description: description_controller.text,
+                            type: status_controller.text,
+                            due_time: date_controller.text
+                          );
+                          var result = await createTask(data);
                           Navigator.pop(context);
+                          showCupertinoDialog(context: context, builder: (context){
+                            return CupertinoAlertDialog(
+                              content: Text(result),
+                              actions: [CupertinoDialogAction(child: const Text('Ok'), onPressed: () {
+                                Navigator.pop(context);
+                              },)],
+                            );
+                          });
                         },
                       ),
                       CupertinoDialogAction(
-                        child: const Text("No", style: TextStyle(color: Colors.red),),
+                        child: const Text("Cancel"),
                         onPressed: () {
                           Navigator.pop(context);
                         },
@@ -332,7 +198,7 @@ class _TaskDetailState extends State<TaskDetail> {
                   );
                 })
           },
-          child: Text("Update", style: TextStyle(color: Colors.black)),
+          child: Text("Create", style: TextStyle(color: Colors.black)),
         ));
     Widget bottomContent() {
       return Container(
@@ -349,21 +215,19 @@ class _TaskDetailState extends State<TaskDetail> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        shadowColor: Colors.transparent,
-                        color: Colors.transparent,
+                        shadowColor: Colors.white,
+                        color: Colors.white,
                         child: Padding(
                           padding: const EdgeInsets.only(left: 16, right: 16),
                           child: SizedBox(
                               child: Center(
                                   child: StatusTextFieldWidget(
                             status: widget.list,
-                            initialStatus: widget.task.type,
+                            initialStatus: 'Status',
                             textEditingController: status_controller,
                             onStatusChanged: (status) {
-                              setState(() {
-                                status_controller.text = status;
-                                _selectedStatus = status;
-                              });
+                              status_controller.text = status;
+                              setState(() {});
                             },
                           ))),
                         )),
@@ -378,13 +242,12 @@ class _TaskDetailState extends State<TaskDetail> {
                               height: 45,
                               child: Center(
                                 child: CupertinoTextFormFieldRow(
+                                  controller: name_controller,
                                   prefix: const Text(
                                     'Name:',
                                     style: TextStyle(color: Colors.black),
                                   ),
                                   style: TextStyle(color: Colors.black),
-                                  initialValue: widget.task.name,
-                                  readOnly: widget.task.canEdit ? false : true,
                                 ),
                               )),
                         )),
@@ -399,13 +262,39 @@ class _TaskDetailState extends State<TaskDetail> {
                               height: 45,
                               child: Center(
                                 child: CupertinoTextFormFieldRow(
+                                  controller: description_controller,
                                   prefix: const Text(
                                     'Description:',
                                     style: TextStyle(color: Colors.black),
                                   ),
                                   style: const TextStyle(color: Colors.black),
-                                  initialValue: widget.task.description,
-                                  readOnly: widget.task.canEdit ? false : true,
+                                ),
+                              )),
+                        )),
+                    Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        shadowColor: Colors.black12,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 0, right: 0),
+                          child: SizedBox(
+                              height: 45,
+                              child: Center(
+                                child: MultiSelectDropDown<String>(
+                                  onOptionSelected:
+                                      (List<ValueItem> selectedOptions) {
+                                        selected = selectedOptions;
+                                        print(selected);
+                                      },
+                                  onOptionRemoved: (index, ValueItem removedOption){ 
+                                    selected.remove(removedOption);
+                                  },
+                                  options: widget.users.map((e) => 
+                                    ValueItem(label: '${e.first_name} ${e.last_name}', value: e.email)
+                                  ).toList(),
+                                  fieldBackgroundColor: Colors.white,
+                                  selectionType: SelectionType.multi,
                                 ),
                               )),
                         )),
@@ -419,31 +308,15 @@ class _TaskDetailState extends State<TaskDetail> {
                           child: SizedBox(
                               height: 45,
                               child: Center(
-                                child: MultiSelectDropDown<String>(
-                                  selectedOptions: widget.task.assigned_to
-                                      .map((e) => ValueItem(
-                                          label:
-                                              '${e.first_name} ${e.last_name}',
-                                          value: e.email))
-                                      .toList(),
-                                  onOptionSelected:
-                                      (List<ValueItem> selectedOptions) {
-                                    selectedOptions
-                                        .map((e) => pickedUsers.add(e.value));
-                                    print(pickedUsers);
+                                child: CupertinoTextFormFieldRow(
+                                  prefix: Text(
+                                    "Due Time: ",
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                  controller: date_controller,
+                                  onTap: () {
+                                    _showDatePicker(context, '');
                                   },
-                                  onOptionRemoved:
-                                      (index, ValueItem selectedOption) {
-                                    pickedUsers.remove(selectedOption.value);
-                                  },
-                                  options: widget.users
-                                      .map((e) => ValueItem(
-                                          label:
-                                              '${e.first_name} ${e.last_name}',
-                                          value: e.email))
-                                      .toList(),
-                                  fieldBackgroundColor: Colors.white,
-                                  selectionType: SelectionType.multi,
                                 ),
                               )),
                         )),
@@ -456,10 +329,14 @@ class _TaskDetailState extends State<TaskDetail> {
     }
 
     ;
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Column(
-        children: [topContent, bottomContent()],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          topContent,
+          SingleChildScrollView(
+            child: bottomContent(),
+          )
+        ],
       ),
     );
   }

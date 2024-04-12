@@ -1,13 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:template_app_bloc/blocs/theme/theme_state.dart';
-import 'package:template_app_bloc/constants/color_constants.dart';
+import 'package:MGMS/blocs/theme/theme_state.dart';
+import 'package:MGMS/constants/color_constants.dart';
 
 class ThemeService {
   static bool useDeviceTheme = true;
   static bool isDark = false;
 
-  static Future<void> setTheme({required bool useDeviceTheme, required bool isDark}) async {
+  static Future<void> setTheme(
+      {required bool useDeviceTheme, required bool isDark}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('useDeviceTheme', useDeviceTheme);
     await prefs.setBool('isDark', isDark);

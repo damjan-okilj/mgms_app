@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:template_app_bloc/api/api.dart';
-import 'package:template_app_bloc/constants/color_constants.dart';
-import 'package:template_app_bloc/helpers/ui_helper.dart';
-import 'package:template_app_bloc/tasks/task_detail.dart';
-import 'package:template_app_bloc/widgets/custom_scaffold.dart';
+import 'package:MGMS/api/api.dart';
+import 'package:MGMS/constants/color_constants.dart';
+import 'package:MGMS/helpers/ui_helper.dart';
+import 'package:MGMS/tasks/task_detail.dart';
+import 'package:MGMS/widgets/custom_scaffold.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -16,12 +16,15 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   List<Task> allTasks = [];
+  List<User> users = [];
 
   @override
   void initState() {
-    fetchTasks().then((value) => 
-    setState(() {
-      allTasks.addAll(value);
+    fetchTasks().then((value) => setState(() {
+          allTasks.addAll(value);
+        }));
+    fetchUsers().then((value) => setState(() {
+      users = value;
     }));
     // TODO: implement initState
     super.initState();
@@ -32,35 +35,48 @@ class _HomeViewState extends State<HomeView> {
     return CustomScaffold(
       onRefresh: () async {
         await Future<void>.delayed(const Duration(milliseconds: 1000));
-        setState(() {});
+        var task = await fetchTasks();
+        setState(() {
+          if (allTasks.length != task.length) {
+            allTasks = task;
+          }
+        });
       },
       title: "Tasks",
-      children: allTasks.map((e) => 
-        Container(
-                  child: Card(
-                    child: Column(children: [
-                      CupertinoListTile(
-                          leading: Icon(Icons.task, color: Colors.black),
-                          title: Text(e.name, style: TextStyle(color: Colors.black)),
-                          subtitle: Text('Status: ${e.type}', style: TextStyle(color: Colors.black),),
-                          onTap: () {
-                            Navigator.push(
-                              context, 
-                              CupertinoPageRoute(builder: (context) => 
-                              TaskDetail(task: e)));
-                          },
+      children: allTasks
+          .map(
+            (e) => Container(
+              child: Card(
+                child: Column(
+                  children: [
+                    CupertinoListTile(
+                      leading: Icon(Icons.task, color: Colors.black),
+                      title:
+                          Text(e.name, style: TextStyle(color: Colors.black)),
+                      subtitle: Text(
+                        'Status: ${e.type}',
+                        style: TextStyle(color: Colors.black),
                       ),
-                    ],),
-                  ), 
-                  margin: const EdgeInsets.only(bottom: 10),
-                  width: UIHelper.deviceWidth,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    color: ColorConstants.lightBackgroundColorActivated,
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
-                  ),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                                builder: (context) => TaskDetail(task: e, users: users,)));
+                      },
+                    ),
+                  ],
                 ),
-      ).toList(),
+              ),
+              margin: const EdgeInsets.only(bottom: 10),
+              width: UIHelper.deviceWidth,
+              height: 100,
+              decoration: BoxDecoration(
+                color: ColorConstants.lightBackgroundColorActivated,
+                borderRadius: const BorderRadius.all(Radius.circular(10)),
+              ),
+            ),
+          )
+          .toList(),
     );
   }
 }

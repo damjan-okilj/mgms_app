@@ -1,4 +1,4 @@
-package com.enescerrahoglu.template_app_bloc
+package com.enescerrahoglu.MGMS
 
 import io.flutter.embedding.android.FlutterActivity
 

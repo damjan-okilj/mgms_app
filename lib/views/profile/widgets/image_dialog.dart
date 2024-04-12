@@ -8,18 +8,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:pull_down_button/pull_down_button.dart';
-import 'package:template_app_bloc/blocs/profile/profile_bloc.dart';
-import 'package:template_app_bloc/blocs/profile/profile_event.dart';
-import 'package:template_app_bloc/blocs/profile/profile_state.dart';
-import 'package:template_app_bloc/blocs/theme/theme_bloc.dart';
-import 'package:template_app_bloc/blocs/theme/theme_state.dart';
-import 'package:template_app_bloc/components/custom_trailing.dart';
-import 'package:template_app_bloc/constants/color_constants.dart';
-import 'package:template_app_bloc/constants/image_constants.dart';
-import 'package:template_app_bloc/generated/locale_keys.g.dart';
-import 'package:template_app_bloc/helpers/app_helper.dart';
-import 'package:template_app_bloc/helpers/ui_helper.dart';
-import 'package:template_app_bloc/services/firebase_service.dart';
+import 'package:MGMS/blocs/profile/profile_bloc.dart';
+import 'package:MGMS/blocs/profile/profile_event.dart';
+import 'package:MGMS/blocs/profile/profile_state.dart';
+import 'package:MGMS/blocs/theme/theme_bloc.dart';
+import 'package:MGMS/blocs/theme/theme_state.dart';
+import 'package:MGMS/components/custom_trailing.dart';
+import 'package:MGMS/constants/color_constants.dart';
+import 'package:MGMS/constants/image_constants.dart';
+import 'package:MGMS/generated/locale_keys.g.dart';
+import 'package:MGMS/helpers/app_helper.dart';
+import 'package:MGMS/helpers/ui_helper.dart';
+import 'package:MGMS/services/firebase_service.dart';
 
 class ImageDialog extends StatefulWidget {
   final String imageUrl;
@@ -30,7 +30,8 @@ class ImageDialog extends StatefulWidget {
   State<ImageDialog> createState() => _ImageDialogState();
 }
 
-class _ImageDialogState extends State<ImageDialog> with SingleTickerProviderStateMixin {
+class _ImageDialogState extends State<ImageDialog>
+    with SingleTickerProviderStateMixin {
   late PhotoViewController _photoViewController;
   late AnimationController _animationController;
   late Animation<double> _animation;
@@ -48,7 +49,8 @@ class _ImageDialogState extends State<ImageDialog> with SingleTickerProviderStat
       duration: const Duration(milliseconds: 200),
     );
 
-    _animation = Tween<double>(begin: 1.0, end: 0.0).animate(_animationController);
+    _animation =
+        Tween<double>(begin: 1.0, end: 0.0).animate(_animationController);
 
     _animationController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -77,7 +79,8 @@ class _ImageDialogState extends State<ImageDialog> with SingleTickerProviderStat
   }
 
   void _handleVerticalDragEnd(DragEndDetails details) {
-    if (_animationController.isAnimating || _animationController.status == AnimationStatus.completed) {
+    if (_animationController.isAnimating ||
+        _animationController.status == AnimationStatus.completed) {
       return;
     }
 
@@ -102,7 +105,8 @@ class _ImageDialogState extends State<ImageDialog> with SingleTickerProviderStat
                   middle: const Text(LocaleKeys.profile_photo).tr(),
                   backgroundColor: Colors.transparent,
                   border: const Border(),
-                  brightness: themeState.isDark ? Brightness.dark : Brightness.light,
+                  brightness:
+                      themeState.isDark ? Brightness.dark : Brightness.light,
                   trailing: pickedImage == null
                       ? CupertinoButton(
                           padding: EdgeInsets.zero,
@@ -111,10 +115,12 @@ class _ImageDialogState extends State<ImageDialog> with SingleTickerProviderStat
                               context: context,
                               builder: (context) {
                                 return ClipRRect(
-                                  borderRadius: const BorderRadius.vertical(top: Radius.circular(10.0)),
+                                  borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(10.0)),
                                   child: CupertinoPageScaffold(
-                                    backgroundColor:
-                                        themeState.isDark ? ColorConstants.darkItem : ColorConstants.lightBackground,
+                                    backgroundColor: themeState.isDark
+                                        ? ColorConstants.darkItem
+                                        : ColorConstants.lightBackground,
                                     child: SafeArea(
                                       child: SingleChildScrollView(
                                         padding: const EdgeInsets.all(10),
@@ -123,9 +129,12 @@ class _ImageDialogState extends State<ImageDialog> with SingleTickerProviderStat
                                             Row(
                                               children: [
                                                 ClipRRect(
-                                                  borderRadius: UIHelper.borderRadius,
+                                                  borderRadius:
+                                                      UIHelper.borderRadius,
                                                   child: CachedNetworkImage(
-                                                    width: UIHelper.deviceWidth * 0.10,
+                                                    width:
+                                                        UIHelper.deviceWidth *
+                                                            0.10,
                                                     imageUrl: widget.imageUrl,
                                                   ),
                                                 ),
@@ -145,15 +154,23 @@ class _ImageDialogState extends State<ImageDialog> with SingleTickerProviderStat
                                                 Container(
                                                   decoration: BoxDecoration(
                                                     color: themeState.isDark
-                                                        ? ColorConstants.darkBackgroundColorActivated
-                                                        : ColorConstants.lightBackgroundColorActivated,
-                                                    borderRadius: const BorderRadius.all(Radius.circular(100)),
+                                                        ? ColorConstants
+                                                            .darkBackgroundColorActivated
+                                                        : ColorConstants
+                                                            .lightBackgroundColorActivated,
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            Radius.circular(
+                                                                100)),
                                                   ),
                                                   child: CupertinoButton(
                                                     padding: EdgeInsets.zero,
                                                     minSize: 30,
-                                                    child: const Icon(CupertinoIcons.clear,
-                                                        size: 18, color: CupertinoColors.white),
+                                                    child: const Icon(
+                                                        CupertinoIcons.clear,
+                                                        size: 18,
+                                                        color: CupertinoColors
+                                                            .white),
                                                     onPressed: () {
                                                       Navigator.pop(context);
                                                     },
@@ -163,9 +180,13 @@ class _ImageDialogState extends State<ImageDialog> with SingleTickerProviderStat
                                             ),
                                             const SizedBox(height: 20),
                                             ClipRRect(
-                                              borderRadius: const BorderRadius.vertical(
-                                                  top: Radius.circular(10.0), bottom: Radius.circular(10.0)),
-                                              child: CupertinoListSection.insetGrouped(
+                                              borderRadius: const BorderRadius
+                                                  .vertical(
+                                                  top: Radius.circular(10.0),
+                                                  bottom:
+                                                      Radius.circular(10.0)),
+                                              child: CupertinoListSection
+                                                  .insetGrouped(
                                                 additionalDividerMargin: 0,
                                                 hasLeading: false,
                                                 footer: null,
@@ -173,34 +194,55 @@ class _ImageDialogState extends State<ImageDialog> with SingleTickerProviderStat
                                                 topMargin: 0,
                                                 children: [
                                                   CupertinoListTile(
-                                                    title: const Text(LocaleKeys.take_a_photo).tr(),
+                                                    title: const Text(LocaleKeys
+                                                            .take_a_photo)
+                                                        .tr(),
                                                     trailing: Icon(
                                                       CupertinoIcons.camera,
                                                       color: themeState.isDark
-                                                          ? ColorConstants.lightItem
-                                                          : ColorConstants.darkItem,
+                                                          ? ColorConstants
+                                                              .lightItem
+                                                          : ColorConstants
+                                                              .darkItem,
                                                     ),
-                                                    backgroundColor: themeState.isDark
-                                                        ? ColorConstants.darkBottomSheetItem
-                                                        : ColorConstants.lightBottomSheetItem,
-                                                    backgroundColorActivated: themeState.isDark
-                                                        ? ColorConstants.darkBackgroundColorActivated
-                                                        : ColorConstants.lightBackgroundColorActivated,
+                                                    backgroundColor: themeState
+                                                            .isDark
+                                                        ? ColorConstants
+                                                            .darkBottomSheetItem
+                                                        : ColorConstants
+                                                            .lightBottomSheetItem,
+                                                    backgroundColorActivated:
+                                                        themeState.isDark
+                                                            ? ColorConstants
+                                                                .darkBackgroundColorActivated
+                                                            : ColorConstants
+                                                                .lightBackgroundColorActivated,
                                                     onTap: () async {
                                                       try {
-                                                        await AppHelper.pickImageFromCamera().then((file) {
-                                                          setState(() => pickedImage = file);
+                                                        await AppHelper
+                                                                .pickImageFromCamera()
+                                                            .then((file) {
+                                                          setState(() =>
+                                                              pickedImage =
+                                                                  file);
                                                         });
                                                         if (context.mounted) {
-                                                          Navigator.pop(context);
+                                                          Navigator.pop(
+                                                              context);
                                                         }
                                                       } catch (e) {
                                                         if (context.mounted) {
-                                                          Navigator.pop(context);
-                                                          AppHelper.showErrorMessage(
+                                                          Navigator.pop(
+                                                              context);
+                                                          AppHelper
+                                                              .showErrorMessage(
                                                             context: context,
-                                                            title: LocaleKeys.camera_access_denied.tr(),
-                                                            content: LocaleKeys.directed_to_app_settings.tr(),
+                                                            title: LocaleKeys
+                                                                .camera_access_denied
+                                                                .tr(),
+                                                            content: LocaleKeys
+                                                                .directed_to_app_settings
+                                                                .tr(),
                                                             onPressed: () {
                                                               openAppSettings();
                                                             },
@@ -210,34 +252,55 @@ class _ImageDialogState extends State<ImageDialog> with SingleTickerProviderStat
                                                     },
                                                   ),
                                                   CupertinoListTile(
-                                                    title: const Text(LocaleKeys.select_photo).tr(),
+                                                    title: const Text(LocaleKeys
+                                                            .select_photo)
+                                                        .tr(),
                                                     trailing: Icon(
                                                       CupertinoIcons.photo,
                                                       color: themeState.isDark
-                                                          ? ColorConstants.lightItem
-                                                          : ColorConstants.darkItem,
+                                                          ? ColorConstants
+                                                              .lightItem
+                                                          : ColorConstants
+                                                              .darkItem,
                                                     ),
-                                                    backgroundColor: themeState.isDark
-                                                        ? ColorConstants.darkBottomSheetItem
-                                                        : ColorConstants.lightBottomSheetItem,
-                                                    backgroundColorActivated: themeState.isDark
-                                                        ? ColorConstants.darkBackgroundColorActivated
-                                                        : ColorConstants.lightBackgroundColorActivated,
+                                                    backgroundColor: themeState
+                                                            .isDark
+                                                        ? ColorConstants
+                                                            .darkBottomSheetItem
+                                                        : ColorConstants
+                                                            .lightBottomSheetItem,
+                                                    backgroundColorActivated:
+                                                        themeState.isDark
+                                                            ? ColorConstants
+                                                                .darkBackgroundColorActivated
+                                                            : ColorConstants
+                                                                .lightBackgroundColorActivated,
                                                     onTap: () async {
                                                       try {
-                                                        await AppHelper.pickImageFromGallery().then((file) {
-                                                          setState(() => pickedImage = file);
+                                                        await AppHelper
+                                                                .pickImageFromGallery()
+                                                            .then((file) {
+                                                          setState(() =>
+                                                              pickedImage =
+                                                                  file);
                                                         });
                                                         if (context.mounted) {
-                                                          Navigator.pop(context);
+                                                          Navigator.pop(
+                                                              context);
                                                         }
                                                       } catch (e) {
                                                         if (context.mounted) {
-                                                          Navigator.pop(context);
-                                                          AppHelper.showErrorMessage(
+                                                          Navigator.pop(
+                                                              context);
+                                                          AppHelper
+                                                              .showErrorMessage(
                                                             context: context,
-                                                            title: LocaleKeys.gallery_access_denied.tr(),
-                                                            content: LocaleKeys.directed_to_app_settings.tr(),
+                                                            title: LocaleKeys
+                                                                .gallery_access_denied
+                                                                .tr(),
+                                                            content: LocaleKeys
+                                                                .directed_to_app_settings
+                                                                .tr(),
                                                             onPressed: () {
                                                               openAppSettings();
                                                             },
@@ -261,25 +324,35 @@ class _ImageDialogState extends State<ImageDialog> with SingleTickerProviderStat
                           child: Text(
                             LocaleKeys.edit,
                             style: TextStyle(
-                              color:
-                                  themeState.isDark ? ColorConstants.darkPrimaryIcon : ColorConstants.lightPrimaryIcon,
+                              color: themeState.isDark
+                                  ? ColorConstants.darkPrimaryIcon
+                                  : ColorConstants.lightPrimaryIcon,
                             ),
                           ).tr())
                       : CustomTrailing(
                           showLoadingIndicator: true,
                           text: LocaleKeys.done,
-                          isLoading: profileState.user == null ? true : profileState.isLoading,
+                          isLoading: profileState.user == null
+                              ? true
+                              : profileState.isLoading,
                           onPressed: () async {
                             try {
-                              profileBloc.add(const SetLoading(isLoading: true));
-                              profileState.user!.profilePhoto = await FirebaseService.uploadImage(
-                                  pickedImage!, FirebaseService.getProfilePhotoChild(profileState.user!));
+                              profileBloc
+                                  .add(const SetLoading(isLoading: true));
+                              profileState.user!.profilePhoto =
+                                  await FirebaseService.uploadImage(
+                                      pickedImage!,
+                                      FirebaseService.getProfilePhotoChild(
+                                          profileState.user!));
 
-                              profileBloc.add(UpdateUser(user: profileState.user!));
+                              profileBloc
+                                  .add(UpdateUser(user: profileState.user!));
                             } catch (e) {
                               if (context.mounted) {
                                 AppHelper.showErrorMessage(
-                                    context: context, title: LocaleKeys.something_went_wrong.tr());
+                                    context: context,
+                                    title:
+                                        LocaleKeys.something_went_wrong.tr());
                               }
                             }
                           },
@@ -302,18 +375,22 @@ class _ImageDialogState extends State<ImageDialog> with SingleTickerProviderStat
                         onVerticalDragEnd: _handleVerticalDragEnd,
                         child: PhotoView(
                           controller: _photoViewController,
-                          backgroundDecoration: const BoxDecoration(color: Colors.transparent),
+                          backgroundDecoration:
+                              const BoxDecoration(color: Colors.transparent),
                           basePosition: Alignment.center,
                           onScaleEnd: (context, details, controllerValue) {
                             _photoViewController.reset();
                           },
                           loadingBuilder: (context, event) {
-                            return const Center(child: CupertinoActivityIndicator());
+                            return const Center(
+                                child: CupertinoActivityIndicator());
                           },
                           imageProvider: pickedImage == null
                               ? widget.imageUrl.isNotEmpty
                                   ? NetworkImage(widget.imageUrl)
-                                  : Image.asset(ImageConstants.defaultProfilePhoto).image
+                                  : Image.asset(
+                                          ImageConstants.defaultProfilePhoto)
+                                      .image
                               : FileImage(pickedImage!) as ImageProvider,
                         ),
                       ),
@@ -322,7 +399,8 @@ class _ImageDialogState extends State<ImageDialog> with SingleTickerProviderStat
                       child: BackdropFilter(
                         filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                         child: Padding(
-                          padding: const EdgeInsets.only(bottom: 20, left: 10, right: 10),
+                          padding: const EdgeInsets.only(
+                              bottom: 20, left: 10, right: 10),
                           child: Row(
                             children: [
                               PullDownButton(
@@ -331,11 +409,13 @@ class _ImageDialogState extends State<ImageDialog> with SingleTickerProviderStat
                                     title: LocaleKeys.save_image.tr(),
                                     icon: CupertinoIcons.square_arrow_down,
                                     onTap: () async {
-                                      await AppHelper.downloadImage(widget.imageUrl);
+                                      await AppHelper.downloadImage(
+                                          widget.imageUrl);
                                     },
                                   ),
                                 ],
-                                buttonBuilder: (context, showMenu) => CupertinoButton(
+                                buttonBuilder: (context, showMenu) =>
+                                    CupertinoButton(
                                   onPressed: showMenu,
                                   child: Icon(
                                     CupertinoIcons.share,
