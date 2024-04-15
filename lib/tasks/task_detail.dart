@@ -1,3 +1,4 @@
+import 'package:MGMS/components/comments_field.dart';
 import 'package:dropdown_cupertino/dropdown_cupertino.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -323,7 +324,10 @@ class _TaskDetailState extends State<TaskDetail> {
                         },
                       ),
                       CupertinoDialogAction(
-                        child: const Text("No", style: TextStyle(color: Colors.red),),
+                        child: const Text(
+                          "No",
+                          style: TextStyle(color: Colors.red),
+                        ),
                         onPressed: () {
                           Navigator.pop(context);
                         },
@@ -449,18 +453,24 @@ class _TaskDetailState extends State<TaskDetail> {
                         )),
                   ],
                 ),
-                readButton
+                readButton,
+                CommentsList(comments: widget.task.comments)
               ],
             ),
           ));
     }
 
     ;
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Column(
-        children: [topContent, bottomContent()],
+    return Material(
+        child: SingleChildScrollView(
+      child: Column(
+        children: [
+          topContent,
+          SingleChildScrollView(
+            child: bottomContent(),
+          )
+        ],
       ),
-    );
+    ));
   }
 }

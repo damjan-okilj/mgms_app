@@ -1,3 +1,4 @@
+import 'package:MGMS/views/colorette/colorette_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -42,18 +43,11 @@ class _NavigationViewState extends State<NavigationView> {
         label: 'Tasks',
       ),
     ];
+    print(globals.first_name);
     if (globals.role == "ADMINISTRATOR") {
       menus.add(BottomNavigationBarItem(
           icon: Icon(CupertinoIcons.add), label: "New"));
-      menus.add(
-        BottomNavigationBarItem(
-          icon: const Icon(
-            CupertinoIcons.settings_solid,
-          ),
-          label: LocaleKeys.settings.tr(),
-        ),
-      );
-    } else {
+      menus.add(const BottomNavigationBarItem(icon: Icon(CupertinoIcons.collections), label: "Colorette"));
       menus.add(
         BottomNavigationBarItem(
           icon: const Icon(
@@ -63,11 +57,23 @@ class _NavigationViewState extends State<NavigationView> {
         ),
       );
     }
+    else {
+      menus.add(
+        BottomNavigationBarItem(
+          icon: const Icon(
+            CupertinoIcons.settings_solid,
+          ),
+          label: LocaleKeys.settings.tr(),
+        ),
+      );
+
+    }
     return menus;
   }
 
   @override
   Widget build(BuildContext context) {
+    print(navBarItems());
     return CupertinoTabScaffold(
       controller: tabController,
       tabBar: CupertinoTabBar(
@@ -103,6 +109,12 @@ class _NavigationViewState extends State<NavigationView> {
               },
             );
           case 2:
+            return CupertinoTabView(
+              builder: (context) {
+                return const ColoretteView();
+              },
+            );
+          case 3:
             return CupertinoTabView(
               builder: (context) {
                 return const SettingsView();
