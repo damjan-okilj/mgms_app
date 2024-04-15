@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -96,7 +97,7 @@ class _MyAppState extends State<MyApp> {
         useDeviceTheme: ThemeService.useDeviceTheme, isDark: isDarkMode));
 
     super.initState();
-    if (widget.loggedIn == true) {
+    if (widget.loggedIn == true && !kIsWeb) {
       print('maybe');
       FlutterLocalNotificationsPlugin notifications =
           FlutterLocalNotificationsPlugin();

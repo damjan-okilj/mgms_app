@@ -1,3 +1,4 @@
+import 'package:MGMS/components/common_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -24,8 +25,8 @@ class _HomeViewState extends State<HomeView> {
           allTasks.addAll(value);
         }));
     fetchUsers().then((value) => setState(() {
-      users = value;
-    }));
+          users = value;
+        }));
     // TODO: implement initState
     super.initState();
   }
@@ -44,39 +45,8 @@ class _HomeViewState extends State<HomeView> {
       },
       title: "Tasks",
       children: allTasks
-          .map(
-            (e) => Container(
-              child: Card(
-                child: Column(
-                  children: [
-                    CupertinoListTile(
-                      leading: Icon(Icons.task, color: Colors.black),
-                      title:
-                          Text(e.name, style: TextStyle(color: Colors.black)),
-                      subtitle: Text(
-                        'Status: ${e.type}',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                                builder: (context) => TaskDetail(task: e, users: users,)));
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              margin: const EdgeInsets.only(bottom: 10),
-              width: UIHelper.deviceWidth,
-              height: 100,
-              decoration: BoxDecoration(
-                color: ColorConstants.lightBackgroundColorActivated,
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
-              ),
-            ),
-          )
-          .toList(),
+          .map((e) => CommonCard(task: e, users: users,)
+        ).toList()
     );
   }
 }
