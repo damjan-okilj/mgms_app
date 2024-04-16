@@ -1,3 +1,4 @@
+import 'package:MGMS/utils/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -65,8 +66,8 @@ class _LoginViewState extends State<LoginView> with LoginViewMixin {
                                 LoginButton(
                                   isLoading: state.isLoading,
                                   onPressed: () async {
-                                    int result = await login(context);
-                                    if (result == 200) {
+                                    Map result = await login(context);
+                                    if (result['status_code'] == 200) {
                                       Navigator.push(
                                         context,
                                         CupertinoPageRoute(
@@ -74,6 +75,7 @@ class _LoginViewState extends State<LoginView> with LoginViewMixin {
                                               const NavigationView(),
                                         ),
                                       );
+                                      connect_to_ws(result['email'], result['access_token']);
                                     }
                                   },
                                 ),

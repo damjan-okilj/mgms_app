@@ -99,20 +99,32 @@ class Colorette {
   final String date;
   final String time;
   final String colorette;
+  final String user_def;
   final String colorhex;
+  final double? L;
+  final double? a;
+  final double? b;
 
   const Colorette(
       {required this.date,
       required this.time,
       required this.colorette,
-      required this.colorhex});
+      required this.colorhex,
+      required this.user_def,
+      this.L,
+      this.a,
+      this.b});
 
   factory Colorette.fromJson(Map<String, dynamic> json) {
     return Colorette(
         date: json['date'],
         time: json['time'],
         colorette: json['colorette'].toString(),
-        colorhex: json['colorhex']);
+        colorhex: json['colorhex'],
+        L: json['L'],
+        a: json['a'],
+        b: json['b'],
+        user_def: json['user_defined'].toString());
   }
 }
 
@@ -327,7 +339,7 @@ Future<String> deleteTask(String slug) async {
   authenticatior.authorize();
 }*/
 
-Future<int> login(BuildContext context) async {
+Future<Map> login(BuildContext context) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final AadOAuth oAuth = AadOAuth(config);
   final result = await oAuth.login();
@@ -343,10 +355,10 @@ Future<int> login(BuildContext context) async {
     prefs.setString("ROLE", login['role']);
     prefs.setString('access_token', login['access_token']);
     prefs.setString('email', login['email']);
-    return 200;
+    return {'status_code': 200, 'access_token': login['access_token'], 'email': login['email']};
     //navigateToHome(context);
   } else {
-    return 500;
+    return {'status_code': 500};
   }
 }
 

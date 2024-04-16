@@ -58,7 +58,7 @@ class _ColoretteState extends State<ColoretteDetails> {
                       child: Container(
                         height: 180,
                         width: double.infinity,
-                        child: ColoredBox(color: Colors.brown,),
+                        child: ColoredBox(color: Color(int.parse(measure.colorhex.substring(1,7), radix: 16) + 0xFF000000)),
                       ),
                     ),
                   ),
@@ -66,8 +66,12 @@ class _ColoretteState extends State<ColoretteDetails> {
                     padding: EdgeInsetsDirectional.fromSTEB(16, 8, 0, 0),
                     child: Text("Colorette: ${measure.colorette}"),
                   ),
+                  Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(16, 8, 0, 0),
+                    child: Text("Colorette: ${measure.user_def}"),
+                  ),
                   Padding(padding: EdgeInsetsDirectional.fromSTEB(16, 4, 0, 0),
-                    child: Text("CIELAB:  L:28.4, A:22.0, B:17.0"),
+                    child: Text("CIELAB:  L:${measure.L}, A:${measure.a}, B:${measure.b}"),
                   ),
                   Padding(padding: EdgeInsetsDirectional.fromSTEB(16, 4, 0, 0),
                   child: Text("TIME: ${measure.time}"),)

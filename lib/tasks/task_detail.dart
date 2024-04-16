@@ -116,7 +116,7 @@ class _TaskDetailState extends State<TaskDetail> {
         SizedBox(height: 10.0),
         Text(
           widget.task.name,
-          style: TextStyle(color: Colors.white, fontSize: 45.0),
+          style: TextStyle(color: Colors.white, fontSize: 20.0),
         ),
         SizedBox(height: 30.0),
         Row(
