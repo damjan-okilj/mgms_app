@@ -1,11 +1,25 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:aad_oauth/aad_oauth.dart';
 import 'package:aad_oauth/model/config.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:MGMS/main.dart';
+
+
+String returnUrl() {
+  String baseURL = "";
+  if(!kIsWeb){
+    baseURL = "172.16.63.32:80";
+    return baseURL;
+  } 
+  baseURL = "localhost:8000";
+  return baseURL;
+}
+
 
 final Config config = Config(
     tenant: '9d26c674-3130-4fe6-a83c-be30f76f331f',
@@ -196,7 +210,7 @@ User resolve_user(user) {
 
 Future<List<Measure>> fetchMeasures() async {
   final response =
-      await http.get(Uri.parse("http://172.16.63.32:80/colorette/list"));
+      await http.get(Uri.parse("http://${returnUrl()}/colorette/list"));
 
   if (response.statusCode == 200) {
     var decoded = jsonDecode(response.body);
@@ -209,7 +223,7 @@ Future<List<Measure>> fetchMeasures() async {
 
 Future<User> fetchMe() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final response = await http.get(Uri.parse("http://172.16.63.32:80/user/me"),
+  final response = await http.get(Uri.parse("http://${returnUrl()}/user/me"),
       headers: {
         "Authorization": "Bearer ${prefs.getString("access_token").toString()}"
       });
@@ -223,7 +237,7 @@ Future<User> fetchMe() async {
 
 Future<List<User>> fetchUsers() async {
   final response =
-      await http.get(Uri.parse("http://172.16.63.32:80/user/users"));
+      await http.get(Uri.parse("http://${returnUrl()}/user/users"));
   if (response.statusCode == 200) {
     var decoded = jsonDecode(response.body);
     Iterable i = (decoded);
@@ -236,7 +250,7 @@ Future<List<User>> fetchUsers() async {
 Future<List<Task>> fetchTasks() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final response = await http
-      .get(Uri.parse("http://172.16.63.32:80/task/tasks"), headers: {
+      .get(Uri.parse("http://${returnUrl()}/task/tasks"), headers: {
     "Authorization": "Bearer ${prefs.getString("access_token").toString()}"
   });
   if (response.statusCode == 200) {
@@ -251,7 +265,7 @@ Future<List<Task>> fetchTasks() async {
 Future<String> createTask(CreateTaskDTO data) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final response =
-      await http.post(Uri.parse("http://172.16.63.32:80/task/create"),
+      await http.post(Uri.parse("http://${returnUrl()}/task/create"),
           headers: {
             "Authorization":
                 "Bearer ${prefs.getString("access_token").toString()}",
@@ -274,7 +288,7 @@ Future<String> createTask(CreateTaskDTO data) async {
 Future<String> updateTask(CreateTaskDTO data, String slug) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final response =
-      await http.post(Uri.parse("http://172.16.63.32:80/task/edit/${slug}"),
+      await http.post(Uri.parse("http://${returnUrl()}/task/edit/${slug}"),
           headers: {
             "Authorization":
                 "Bearer ${prefs.getString("access_token").toString()}",
@@ -295,7 +309,7 @@ Future<String> updateTask(CreateTaskDTO data, String slug) async {
 Future<String> updateTaskStatus(StatusDTO data, String slug) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final response =
-      await http.put(Uri.parse("http://172.16.63.32:80/task/status/${slug}"),
+      await http.put(Uri.parse("http://${returnUrl()}/task/status/${slug}"),
           headers: {
             "Authorization":
                 "Bearer ${prefs.getString("access_token").toString()}",
@@ -316,7 +330,7 @@ Future<String> updateTaskStatus(StatusDTO data, String slug) async {
 Future<String> deleteTask(String slug) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final response = await http.delete(
-      Uri.parse("http://172.16.63.32:80/task/delete/${slug}"),
+      Uri.parse("http://${returnUrl()}/task/delete/${slug}"),
       headers: {
         "Authorization": "Bearer ${prefs.getString("access_token").toString()}",
       });
@@ -365,7 +379,7 @@ Future<Map> login(BuildContext context) async {
 Future<Map> auth(String? token, BuildContext context) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final response =
-      await http.get(Uri.parse("http://172.16.63.32:80/user/login/${token}"));
+      await http.get(Uri.parse("http://${returnUrl()}/user/login/${token}"));
   if (response.statusCode == 200) {
     var decoded = jsonDecode(response.body);
     print(decoded);

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:MGMS/views/colorette/colorette_details.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -143,7 +144,7 @@ class _MyAppState extends State<MyApp> {
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,
         locale: context.locale,
-        title: 'Template App',
+        title: 'MGMS',
         theme: ThemeService.buildTheme(themeState),
         debugShowCheckedModeBanner: false,
         home: widget.loggedIn == true
