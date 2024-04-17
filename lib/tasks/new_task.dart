@@ -282,6 +282,7 @@ class _NewTaskState extends State<NewTask> {
                               height: 45,
                               child: Center(
                                 child: MultiSelectDropDown<String>(
+                                  searchEnabled: true,
                                   onOptionSelected:
                                       (List<ValueItem> selectedOptions) {
                                         selected = selectedOptions;
