@@ -454,7 +454,7 @@ class _TaskDetailState extends State<TaskDetail> {
                   ],
                 ),
                 readButton,
-                CommentsList(comments: widget.task.comments)
+                CommentsList(comments: widget.task.comments, slug: widget.task.slug,)
               ],
             ),
           ));

@@ -38,9 +38,7 @@ class _HomeViewState extends State<HomeView> {
         await Future<void>.delayed(const Duration(milliseconds: 1000));
         var task = await fetchTasks();
         setState(() {
-          if (allTasks.length != task.length) {
             allTasks = task;
-          }
         });
       },
       title: "Tasks",

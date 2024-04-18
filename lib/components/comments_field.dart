@@ -1,21 +1,42 @@
 import 'package:MGMS/api/api.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class CommentsList extends StatelessWidget {
-  CommentsList({super.key, this.comments});
-  List<Comment>? comments;
+class CommentsList extends StatefulWidget {
+  CommentsList({super.key, required this.comments, required this.slug});
+  List<Comment> comments;
+  String slug;
   
+  State<CommentsList> createState() => _CommentListState();
+}
+
+class _CommentListState extends State<CommentsList>{
   @override
   Widget build(BuildContext context) {
+    TextEditingController comment_controller = TextEditingController();
+    List<Widget> widgets = [];
+    for(var comment in widget.comments!){
+      widgets.add(_getComments(comment));
+    }
+    print(widgets);
+    widgets.add(CupertinoTextFormFieldRow(controller: comment_controller, placeholder: "Write a comment", onFieldSubmitted: (value) async {
+      var damn = await createComment(CommentDTO(content: value), widget.slug);
+      if (damn['status_code']==200){
+        setState(() {
+          widget.comments.add(damn['comment']);
+        });
+      }
+    },));
+
 
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
       child: ExpansionTile(
         leading: Icon(Icons.comment),
-        trailing: Text(comments!.length.toString()),
+        trailing: Text(widget.comments!.length.toString()),
         title: Text("Comments"),
-        children: comments!.map((e) => _getComments(e)).toList()
+        children: widgets
       )
     );
 

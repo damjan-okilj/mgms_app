@@ -189,6 +189,14 @@ class StatusDTO {
   static Map<String, dynamic> toJson(StatusDTO type) => {"type": type.type};
 }
 
+class CommentDTO {
+  final String content;
+
+  const CommentDTO({required this.content});
+
+  static Map<String, dynamic> toJson(CommentDTO data) => {"content": data.content};
+}
+
 List<Colorette> resolve_measures_from_list(map) {
   Iterable i = map;
   return List<Colorette>.from(i.map((e) => Colorette.fromJson(e)));
@@ -257,6 +265,21 @@ Future<List<Task>> fetchTasks() async {
     var decoded = jsonDecode(response.body);
     Iterable i = (decoded);
     return List<Task>.from(i.map((e) => Task.fromJson(e)));
+  } else {
+    throw Exception("Something went wrong");
+  }
+}
+
+
+Future<Task> fetchTask(String slug) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final response = await http
+      .get(Uri.parse("http://${returnUrl()}/task/details/${slug}"), headers: {
+    "Authorization": "Bearer ${prefs.getString("access_token").toString()}"
+  });
+  if (response.statusCode == 200) {
+    var decoded = jsonDecode(response.body);
+    return Task.fromJson(decoded);
   } else {
     throw Exception("Something went wrong");
   }
@@ -341,6 +364,30 @@ Future<String> deleteTask(String slug) async {
     return decode['message'];
   } else {
     return "Something went wrong";
+  }
+}
+
+Future<Map> createComment(CommentDTO data, String slug) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final response =
+      await http.post(Uri.parse("http://${returnUrl()}/task/comment/${slug}"),
+          headers: {
+            "Authorization":
+                "Bearer ${prefs.getString("access_token").toString()}",
+            "Content-Type": "application/json"
+          },
+          body: jsonEncode(CommentDTO.toJson(data)));
+
+  if (response.statusCode == 200) {
+    var decode = jsonDecode(response.body);
+    return {"comment":Comment.fromJson(decode), "status_code": 200};
+  } else if (response.statusCode == 401) {
+    var decode = jsonDecode(response.body);
+    return {"status_code": 401};
+  } else {
+    var decode = jsonDecode(response.body);
+    print(decode);
+    throw "Something went wrong";
   }
 }
 
