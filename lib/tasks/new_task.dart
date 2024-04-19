@@ -212,7 +212,7 @@ class _NewTaskState extends State<NewTask> {
                 Column(
                   children: [
                     Card(
-                        shape: RoundedRectangleBorder(
+                        shape: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                         shadowColor: Colors.white,
@@ -232,7 +232,7 @@ class _NewTaskState extends State<NewTask> {
                           ))),
                         )),
                     Card(
-                        shape: RoundedRectangleBorder(
+                        shape: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                         shadowColor: Colors.black12,
@@ -252,7 +252,7 @@ class _NewTaskState extends State<NewTask> {
                               )),
                         )),
                     Card(
-                        shape: RoundedRectangleBorder(
+                        shape: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                         shadowColor: Colors.black12,
@@ -272,7 +272,7 @@ class _NewTaskState extends State<NewTask> {
                               )),
                         )),
                     Card(
-                        shape: RoundedRectangleBorder(
+                        shape: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                         shadowColor: Colors.black12,
@@ -300,7 +300,7 @@ class _NewTaskState extends State<NewTask> {
                               )),
                         )),
                     Card(
-                        shape: RoundedRectangleBorder(
+                        shape: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                         shadowColor: Colors.black12,

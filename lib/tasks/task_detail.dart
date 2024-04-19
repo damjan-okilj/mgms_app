@@ -170,7 +170,7 @@ class _TaskDetailState extends State<TaskDetail> {
       return Column(
         children: [
           Card(
-            shape: RoundedRectangleBorder(
+            shape: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
             ),
             shadowColor: Colors.transparent,
@@ -187,7 +187,7 @@ class _TaskDetailState extends State<TaskDetail> {
                 )),
           ),
           Card(
-              shape: RoundedRectangleBorder(
+              shape: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
               shadowColor: Colors.black12,
@@ -208,7 +208,7 @@ class _TaskDetailState extends State<TaskDetail> {
                     )),
               )),
           Card(
-              shape: RoundedRectangleBorder(
+              shape: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
               shadowColor: Colors.black12,
@@ -229,7 +229,7 @@ class _TaskDetailState extends State<TaskDetail> {
                     )),
               )),
           Card(
-              shape: RoundedRectangleBorder(
+              shape: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
               shadowColor: Colors.black12,
@@ -350,7 +350,7 @@ class _TaskDetailState extends State<TaskDetail> {
                 Column(
                   children: [
                     Card(
-                        shape: RoundedRectangleBorder(
+                        shape: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                         shadowColor: Colors.transparent,
@@ -372,7 +372,7 @@ class _TaskDetailState extends State<TaskDetail> {
                           ))),
                         )),
                     Card(
-                        shape: RoundedRectangleBorder(
+                        shape: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                         shadowColor: Colors.black12,
@@ -393,7 +393,7 @@ class _TaskDetailState extends State<TaskDetail> {
                               )),
                         )),
                     Card(
-                        shape: RoundedRectangleBorder(
+                        shape: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                         shadowColor: Colors.black12,
@@ -414,12 +414,12 @@ class _TaskDetailState extends State<TaskDetail> {
                               )),
                         )),
                     Card(
-                        shape: RoundedRectangleBorder(
+                        shape: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                         shadowColor: Colors.black12,
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 16, right: 16),
+                          padding: const EdgeInsets.only(left: 0, right: 0),
                           child: SizedBox(
                               height: 45,
                               child: Center(

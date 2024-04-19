@@ -32,7 +32,8 @@ class _CommonCardState extends State<CommonCard> {
     child: Container(
       width: 100,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.black45),
+        borderRadius: BorderRadius.circular(20)
       ),
       child: Padding(
         padding: EdgeInsets.all(12),
