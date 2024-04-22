@@ -1,4 +1,8 @@
+import 'dart:html';
+
 import 'package:MGMS/components/common_card.dart';
+import 'package:MGMS/views/home/web_view.dart';
+import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -18,6 +22,7 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   List<Task> allTasks = [];
   List<User> users = [];
+  EventController calendar_controller = EventController();
 
   @override
   void initState() {
@@ -27,24 +32,45 @@ class _HomeViewState extends State<HomeView> {
     fetchUsers().then((value) => setState(() {
           users = value;
         }));
-    // TODO: implement initState
+    buildCalendarEvents();    // TODO: implement initState
     super.initState();
   }
 
+  void buildCalendarEvents() {
+    for (var task in allTasks) {
+      calendar_controller.add((CalendarEventData(
+          title: task.name, date: DateTime.parse(task.due_time))));
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    return CustomScaffold(
-      onRefresh: () async {
-        await Future<void>.delayed(const Duration(milliseconds: 1000));
-        var task = await fetchTasks();
-        setState(() {
-            allTasks = task;
-        });
-      },
-      title: "Tasks",
-      children: allTasks
-          .map((e) => CommonCard(task: e, users: users,)
-        ).toList()
-    );
+    return Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+                context,
+                CupertinoPageRoute(
+                    builder: (context) =>
+                        WebHomePage(controller: calendar_controller)));
+          },
+          child: const Icon(CupertinoIcons.calendar),
+        ),
+        body: CustomScaffold(
+            onRefresh: () async {
+              await Future<void>.delayed(const Duration(milliseconds: 1000));
+              var task = await fetchTasks();
+              setState(() {
+                allTasks = task;
+              });
+            },
+            title: "Tasks",
+            children: allTasks
+                .map((e) => CommonCard(
+                      task: e,
+                      users: users,
+                    ))
+                .toList()));
   }
 }

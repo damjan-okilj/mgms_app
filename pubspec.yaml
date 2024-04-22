@@ -58,6 +58,7 @@ dependencies:
   multi_dropdown: ^2.1.4
   flutter_local_notifications: ^17.0.0
   web_socket_channel: ^2.4.5
+  calendar_view: ^1.1.0
 
 dev_dependencies:
   flutter_test:
