@@ -1,4 +1,7 @@
+import 'package:MGMS/tasks/calendar_detail.dart';
+import 'package:MGMS/tasks/task_detail.dart';
 import 'package:calendar_view/calendar_view.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class WeekViewWidget extends StatelessWidget {
@@ -10,23 +13,13 @@ class WeekViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(controller.allEvents);
-    return WeekView(
+    return MonthView(
+      onEventTap: (event, date) => {
+        Navigator.push(context, CupertinoPageRoute(builder: (context) => CalendarDetail(task: event.event,)))
+      },
       controller: controller,
       key: state,
       width: width,
-      showLiveTimeLineInAllDays: true,
-      timeLineWidth: 65,
-      liveTimeIndicatorSettings: LiveTimeIndicatorSettings(
-        color: Colors.redAccent,
-        showTime: true,
-      ),
-      eventTileBuilder: (date, events, boundary, startDuration, endDuration) {
-        print(events);
-        return Container(child: Text("AAAAAA"),);
-      },
-      onEventTap: (events, date) {
-      },
     );
   }
 }

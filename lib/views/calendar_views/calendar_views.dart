@@ -15,7 +15,6 @@ class CalendarViews extends StatelessWidget {
   Widget build(BuildContext context) {
     final availableWidth = MediaQuery.of(context).size.width;
     final width = min(_breakPoint, availableWidth);
-
     return Container(
       height: double.infinity,
       width: double.infinity,

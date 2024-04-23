@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:web_socket_channel/io.dart';
@@ -23,4 +24,11 @@ void connect_to_ws(String email, String access_token) {
                   android: AndroidNotificationDetails("mgms_0", "MGMS")));
         })
       });
+}
+
+DateTime convert_to_dt(String time){
+  DateFormat format = DateFormat("dd/MM/yyyy HH:mm:ss");
+  DateTime dateTime = format.parse(time);
+  print(dateTime);
+  return dateTime;
 }

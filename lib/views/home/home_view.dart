@@ -1,6 +1,6 @@
-import 'dart:html';
-
 import 'package:MGMS/components/common_card.dart';
+import 'package:MGMS/utils/utils.dart';
+import 'package:MGMS/views/home/responsive_builder.dart';
 import 'package:MGMS/views/home/web_view.dart';
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,6 +22,7 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   List<Task> allTasks = [];
   List<User> users = [];
+  List<CalendarEventData> events = [];
   EventController calendar_controller = EventController();
 
   @override
@@ -32,20 +33,18 @@ class _HomeViewState extends State<HomeView> {
     fetchUsers().then((value) => setState(() {
           users = value;
         }));
-    buildCalendarEvents();    // TODO: implement initState
+// TODO: implement initState
     super.initState();
   }
 
-  void buildCalendarEvents() {
-    for (var task in allTasks) {
-      calendar_controller.add((CalendarEventData(
-          title: task.name, date: DateTime.parse(task.due_time))));
-    }
-  }
-
-
   @override
   Widget build(BuildContext context) {
+    for (var task in allTasks) {
+      setState(() {
+        calendar_controller.add(CalendarEventData(
+            title: task.name, date: convert_to_dt(task.due_time), event: task));
+      });
+    }
     return Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () {
@@ -53,7 +52,7 @@ class _HomeViewState extends State<HomeView> {
                 context,
                 CupertinoPageRoute(
                     builder: (context) =>
-                        WebHomePage(controller: calendar_controller)));
+                        CalendarPage(controller: calendar_controller)));
           },
           child: const Icon(CupertinoIcons.calendar),
         ),
