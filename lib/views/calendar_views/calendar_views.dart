@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:MGMS/components/week_view_widget.dart';
+import 'package:MGMS/components/month_view_widget.dart';
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +20,7 @@ class CalendarViews extends StatelessWidget {
       width: double.infinity,
       color: Colors.grey,
       child: Center(
-        child: WeekViewWidget(
+        child: MonthViewWidget(
           controller: controller,
           width: width,
         ),

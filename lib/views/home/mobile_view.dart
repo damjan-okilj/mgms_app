@@ -1,4 +1,4 @@
-import 'package:MGMS/components/week_view_widget.dart';
+import 'package:MGMS/components/month_view_widget.dart';
 import 'package:MGMS/enumerations.dart';
 import 'package:MGMS/views/calendar_views/calendar_views.dart';
 import 'package:calendar_view/calendar_view.dart';

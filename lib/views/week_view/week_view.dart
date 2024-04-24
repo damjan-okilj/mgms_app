@@ -1,5 +1,5 @@
 import 'package:MGMS/components/responsive_widget.dart';
-import 'package:MGMS/components/week_view_widget.dart';
+import 'package:MGMS/components/month_view_widget.dart';
 import 'package:MGMS/enumerations.dart';
 import 'package:MGMS/views/home/web_view.dart';
 import 'package:calendar_view/calendar_view.dart';
@@ -28,7 +28,7 @@ class _WeekViewDemoState extends State<WeekView> {
           elevation: 8,
           onPressed: () => {}//context.pushRoute(CreateEventPage()),
         ),
-        body: WeekViewWidget(controller: widget.controller,),
+        body: MonthViewWidget(controller: widget.controller,),
       ),
     );
   }
