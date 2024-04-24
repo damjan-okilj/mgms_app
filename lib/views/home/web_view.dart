@@ -5,9 +5,8 @@ import 'package:flutter/material.dart';
 import '../../enumerations.dart';
 
 class WebHomePage extends StatefulWidget {
-  WebHomePage({
-    this.selectedView = CalendarView.week, required this.controller
-  });
+  WebHomePage(
+      {this.selectedView = CalendarView.week, required this.controller});
   final EventController controller;
 
   final CalendarView selectedView;
@@ -33,15 +32,9 @@ class _WebHomePageState extends State<WebHomePage> {
       body: Row(
         children: [
           Expanded(
-            child: MediaQuery(
-              data: MediaQuery.of(context).copyWith(
-                size: Size(MediaQuery.of(context).size.width / 2,
-                    MediaQuery.of(context).size.height),
-              ),
-              child: CalendarViews(
-                controller: widget.controller,
-                key: ValueKey(MediaQuery.of(context).size.width),
-              ),
+            child: CalendarViews(
+              controller: widget.controller,
+              key: ValueKey(MediaQuery.of(context).size.width),
             ),
           ),
         ],

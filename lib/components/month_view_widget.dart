@@ -27,8 +27,10 @@ class MonthViewWidget extends StatelessWidget {
         Navigator.push(context, CupertinoPageRoute(builder: (context) => CalendarNewTask(date: date, users: users,)))
       },
       controller: controller,
+      useAvailableVerticalSpace: true,
       key: state,
-      width: width,
+      cellAspectRatio: 1,
+      width: MediaQuery.of(context).size.width,
     );
   }
 }
