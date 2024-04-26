@@ -21,11 +21,12 @@ class MonthViewWidget extends StatelessWidget {
     });
     return MonthView(
       onEventTap: (event, date) => {
-        Navigator.push(context, CupertinoPageRoute(builder: (context) => CalendarDetail(task: event.event,)))
+      Navigator.push(context, CupertinoPageRoute(builder: (context) => CalendarDetail(task: event.event, users: users)))
       },
       onCellTap: (events, date) => {
         Navigator.push(context, CupertinoPageRoute(builder: (context) => CalendarNewTask(date: date, users: users,)))
       },
+      borderSize: 1,
       controller: controller,
       useAvailableVerticalSpace: true,
       key: state,

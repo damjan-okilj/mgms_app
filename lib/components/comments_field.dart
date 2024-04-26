@@ -46,6 +46,7 @@ class _CommentListState extends State<CommentsList> {
   }
 
   Widget _getComments(Comment comment) {
+    print(comment.created_by.last_name);
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -60,10 +61,10 @@ class _CommentListState extends State<CommentsList> {
                 style: TextStyle(color: Colors.black),
               )),
           Text(
-            comment.created_by.email,
+            "${comment.created_by.first_name} ${comment.created_by.last_name}:",
             style: TextStyle(color: Colors.black),
           ),
-          Text("Comment Content: ${comment.content}",
+          Text("${comment.content}",
               textAlign: TextAlign.left, style: TextStyle(color: Colors.black)),
           Divider(
             color: Colors.black45,

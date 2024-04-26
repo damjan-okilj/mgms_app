@@ -11,8 +11,8 @@ import 'package:MGMS/views/profile/widgets/status_text_field.dart';
 
 class CalendarDetail extends StatefulWidget {
   final dynamic task;
-
-  CalendarDetail({super.key, required this.task});
+  final List<User> users;
+  CalendarDetail({super.key, required this.task, required this.users});
   @override
   State<CalendarDetail> createState() => _CalendarDetailState();
   List<String> list = [
@@ -29,15 +29,10 @@ class _CalendarDetailState extends State<CalendarDetail> {
   String? _selectedStatus;
   String dateInput = '';
   List<String> pickedUsers = [];
-  List<User> users = [];
-
 
   @override
   void initState() {
     status_controller.text = widget.task.type;
-    fetchUsers().then((value) => setState(() {
-      users.addAll(value);
-    }));
     // TODO: implement initState
     super.initState();
   }
@@ -255,7 +250,7 @@ class _CalendarDetailState extends State<CalendarDetail> {
                         onOptionRemoved: (index, ValueItem selectedOption) {
                           pickedUsers.remove(selectedOption.value);
                         },
-                        options: users
+                        options: widget.users
                             .map((e) => ValueItem(
                                 label: '${e.first_name} ${e.last_name}',
                                 value: e.email))
@@ -343,11 +338,12 @@ class _CalendarDetailState extends State<CalendarDetail> {
           child: Text("Update", style: TextStyle(color: Colors.black)),
         ));
     Widget bottomContent() {
-        List<ValueItem<String>> valueItems= [];
-        widget.task.assigned_to.map((e) => valueItems.add(ValueItem(
-        label:'${e.first_name} ${e.last_name}',
-        value: e.email)));
-        print(valueItems);
+      List<ValueItem<String>> valueItems = [];
+      for (var user in widget.task.assigned_to) {
+        valueItems.add(ValueItem(
+            label: '${user.first_name} ${user.last_name}', value: user.email));
+      }
+      print(valueItems);
       return Container(
           // height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
@@ -444,7 +440,7 @@ class _CalendarDetailState extends State<CalendarDetail> {
                                       (index, ValueItem selectedOption) {
                                     pickedUsers.remove(selectedOption.value);
                                   },
-                                  options: users
+                                  options: widget.users
                                       .map((e) => ValueItem(
                                           label:
                                               '${e.first_name} ${e.last_name}',
@@ -458,7 +454,10 @@ class _CalendarDetailState extends State<CalendarDetail> {
                   ],
                 ),
                 readButton,
-                CommentsList(comments: widget.task.comments, slug: widget.task.slug,)
+                CommentsList(
+                  comments: widget.task.comments,
+                  slug: widget.task.slug,
+                )
               ],
             ),
           ));
